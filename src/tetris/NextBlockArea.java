@@ -23,9 +23,28 @@ public class NextBlockArea extends JPanel {
 		nextBlock = ga.getNextBlock();
 		gridCellSize = ga.getGridCellSize();
 	}
+	
+	// 대전모드
+	public NextBlockArea(int w, int h, GameArea ga, int locate) {
+		this.gfW = w;
+		this.gfH = h;
+		
+		initThisPanel(locate);
+
+		this.ga = ga;
+		nextBlock = ga.getNextBlock();
+		gridCellSize = ga.getGridCellSize();
+	}
 
 	private void initThisPanel() {
 		this.setBounds(gfW / 15, gfH / 60, gfW / 5, gfW / 5);
+		this.setBackground(new Color(238, 238, 238));
+		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	// 오른쪽 플레이어의 다음 블럭 표시 부분은 locate만큼 오른쪽으로 이동 시킨다.
+	private void initThisPanel(int locate) {
+		this.setBounds(gfW / 15 + locate, gfH / 60, gfW / 5, gfW / 5);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}

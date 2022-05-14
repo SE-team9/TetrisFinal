@@ -21,12 +21,13 @@ public class StartupForm extends JFrame {
 	
 	// 0이면 일반 모드, 1이면 아이템 모드 
 	private JLabel[] lblArrow = { new JLabel("<"), new JLabel(">") };
-	private JLabel[] lblGameMode = new JLabel[2];
+	private JLabel[] lblGameMode = new JLabel[5];
 	private int curGameMode; 
 
 	// 시작 메뉴, 설정 화면, 스코어 보드, 게임 종료 
 	private JButton[] btnMenu = new JButton[4];
 	private String[] btnText = { "Start Game", "Settings", "ScoreBoard", "Quit" };
+	private String[] gameModeText = { "1P Normal Mode", "1P Item Mode", "2P Normal Mode", "2P Item Mode", "2P Time Attack Mode" };
 	private int curPos;
 	
 	public StartupForm(int w, int h) {
@@ -63,15 +64,15 @@ public class StartupForm extends JFrame {
 		title.setHorizontalAlignment(JLabel.CENTER);
 		this.add(title);
 		
-		lblGameMode[0] = new JLabel("Normal Mode");
-		lblGameMode[1] = new JLabel("Item Mode");
-		for(int i = 0; i < 2; i++) {
+		for (int i = 0; i < 5; i++) {
+			lblGameMode[i] = new JLabel(gameModeText[i]);
 			lblGameMode[i].setFont(new Font("Arial", Font.BOLD, 15));
 			lblGameMode[i].setBounds(w / 3, h / 3, w / 3, h / 15);
 			lblGameMode[i].setHorizontalAlignment(JLabel.CENTER);
 			this.add(lblGameMode[i]);
+			lblGameMode[i].setVisible(false);
 		}
-		lblGameMode[1].setVisible(false);
+		lblGameMode[curGameMode].setVisible(true);
 		
 		lblArrow[0].setBounds(w/3 + 10, h/3, 30, 30);
 		lblArrow[1].setBounds(w - (w/3 + 20), h/3, 30, 30);
@@ -142,7 +143,11 @@ public class StartupForm extends JFrame {
 		switch (curPos) {
 		case 0:
 			this.setVisible(false);
-			Tetris.start(); // 게임 시작
+			if (curGameMode < 2) {
+				Tetris.start(); // 일반모드 게임 시작
+			} else {
+				Tetris.start_pvp(); // 대전모드 게임 시작
+			}
 			break;
 		case 1:
 			this.setVisible(false);

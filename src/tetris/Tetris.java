@@ -70,6 +70,19 @@ public class Tetris {
 		gf.startGame(); // 게임 스레드 시작 
 	}
 	
+	// 대전모드
+	public static void start_pvp() {
+		updateFrameSize();
+		
+		gf.getContentPane().removeAll();
+		gf.initComponents_pvp(w, h); 	
+		gf.initControls_pvp();   		
+		gf.setVisible(true); 		
+		gf.getContentPane().repaint();
+
+		gf.startGame_pvp(); // 게임 스레드 시작
+	}
+	
 	// 설정 화면 띄우기 
 	public static void showOption() {
 		updateFrameSize();

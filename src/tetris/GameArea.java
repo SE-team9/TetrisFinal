@@ -23,7 +23,14 @@ public class GameArea extends JPanel {
 	private TetrisBlock block;
 	private TetrisBlock nextBlock;
 	private TetrisBlock[] items;
-  private boolean isItem = false; // 현재 블럭이 아이템 블럭인지 확인하기 위한 변수
+	private boolean isItem = false; // 현재 블럭이 아이템 블럭인지 확인하기 위한 변수
+  
+	//------------------------------ 대전모드용 변수들
+	private int locate; 				// 오른쪽 플레이어의 game area를 locate만큼 오른쪽으로 이동시켜주기 위한 변수
+	private Color[][] opponent_bg; 		// 상대의 배경
+	private Color[][] pre_background; 	// 블럭이 배경으로 이동하기 전 배경
+	private Color[] attackLine; 		// 공격에 사용될 줄
+	private int attackLinesNum; 		// 공격한 줄 수
 
 	public GameArea(int w, int h, int columns) {
 		this.gfW = w;
@@ -38,11 +45,34 @@ public class GameArea extends JPanel {
 		gridCellSize = this.getBounds().width / gridColumns;
 		gridRows = this.getBounds().height / gridCellSize;
 	}
+	
+	// 대전모드
+	public GameArea(int w, int h, int columns, int locate) {
+		this.gfW = w;
+		this.gfH = h;
+		this.locate = locate;
+
+		initThisPanel(locate);
+		initBlocks();
+		initItems();
+		updateNextBlock();
+		
+		gridColumns = columns;
+		gridCellSize = this.getBounds().width / gridColumns;
+		gridRows = this.getBounds().height / gridCellSize;
+	}
 
   // --------------------------------------------------------------------- 초기화관련동작
 	// TODO: 프레임 크기에 따라 GameArea의 x, y 위치가 바뀌어야 함. 
 	private void initThisPanel() {
 		this.setBounds(gfW / 3, gfH / 60, gfW / 3, gfH - 60);
+		this.setBackground(new Color(238, 238, 238));
+		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	// 대전모드
+	private void initThisPanel(int locate) {
+		this.setBounds(gfW / 3 + locate, gfH / 60, gfW / 3, gfH - 60);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}
@@ -98,6 +128,18 @@ public class GameArea extends JPanel {
 		initBlocks(); 			// 다음 블럭 초기화
 		updateNextBlock(); 		// 모든 아이템 초기화
 		initItems(); 			// 모든 블럭 초기화
+	}
+	
+	// 대전모드
+	public void initGameArea_pvp() {
+		this.attackLinesNum = 0;
+		initThisPanel(locate);
+
+		setIsItem(false);
+		initBackgroundArray(); // 시작할 때마다 배경 초기화
+		initBlocks(); // 다음 블럭 초기화
+		updateNextBlock(); // 모든 아이템 초기화
+		initItems(); // 모든 블럭 초기화
 	}
 	
 	// --------------------------------------------------------------------- 난이도조절관련동작
@@ -260,7 +302,7 @@ public class GameArea extends JPanel {
 		repaint();
 	}
 
-	private boolean checkBottom() {
+	public boolean checkBottom() {
 		if (block.getBottomEdge() == gridRows) {
 			return false; // stop
 		}
@@ -604,6 +646,7 @@ public class GameArea extends JPanel {
 		block = null;
 	}
 
+
 	// 삭제된 줄 수 리턴 
 	public int clearLines() {
 
@@ -622,41 +665,86 @@ public class GameArea extends JPanel {
 			}
 			
 			if (lineFilled) {
-				for (int c = 0; c < gridColumns; c++) {
-					background[r][c] = Color.white;
-					repaint();
-				}
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				for (int c = 0; c < gridColumns; c++) {
-					background[r][c] = Color.black;
-					repaint();
-				}
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
 				linesCleared++;
-				
-				clearLine(r);
-				shiftDown(r);
-				
-				// 맨 윗 줄의 위는 null이므로 따로 지워준다. 
-				clearLine(0);
+				animateLineClear(r);
+				updateGameArea(r);
 
 				// 아래로 한 줄 씩 내려왔으므로 지워진 줄 위치에서부터 다시 시작한다.
 				r++;
-
 				repaint();
 			}
 		}
-		
 		return linesCleared;
+	}
+	
+	// 대전모드
+	public int clearLines_pvp() {
+		boolean lineFilled; // 한 줄이 채워졌는지 확인
+		int clearedLineNum = 0; // 삭제된 줄의 수
+
+		int num = 0;
+
+		// 맨 아래 줄부터
+		for (int r = gridRows - 1; r >= 0; r--) {
+
+			lineFilled = true; // 행마다 상태가 업데이트 되는 변수
+
+			for (int c = 0; c < gridColumns; c++) {
+				if (background[r][c] == null) {
+					lineFilled = false;
+					break;
+				}
+			}
+
+			if (lineFilled) {
+				clearedLineNum++;
+				makeAttackLine(r-num); // 지워지는 줄이 있던 위치의 줄을 저장 (블럭이 배경으로 옮겨지기 전의 배경에서 가져온다.)
+				animateLineClear(r);
+				updateGameArea(r);
+
+				setAttackLinesNum();
+
+				if (attackLinesNum < 10) {
+					shiftUp_oppBg();
+					attack();
+				}
+				r++;
+				num++;
+			}
+		}
+		return clearedLineNum;
+	}
+	
+	// 삭제된 행 검정색으로 깜빡이기
+	public void animateLineClear(int r) {
+		for (int c = 0; c < gridColumns; c++) {
+			background[r][c] = Color.white; // 흰색
+			repaint();
+		}
+		try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		for (int c = 0; c < gridColumns; c++) {
+			background[r][c] = Color.black; // 검정색
+			repaint();
+		}
+
+		try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateGameArea(int r) {
+		clearLine(r);
+		shiftDown(r);
+		clearLine(0); // 첫번째 행이 null이 되므로 따로 지워주기
+
+		repaint();
 	}
 
 	// 배경에서 r행 줄을 지운다.
@@ -671,6 +759,69 @@ public class GameArea extends JPanel {
 		for (int row = r; row > 0; row--) {
 			for (int col = 0; col < gridColumns; col++) {
 				background[row][col] = background[row - 1][col];
+			}
+		}
+	}
+	
+	// --------------------------------------------------------------------- 대전모드를 위한 동작
+	
+	// 상대의 배경을 인자로 받아서 변수로 저장한다.
+	public void setOpponent_bg(Color[][] oppbg) {
+		this.opponent_bg = oppbg;
+	}
+	
+	// 블럭을 배경으로 옮기기 전의 배경상태를 저장해 두기 위해 사용한다.
+	public void saveBackground() {
+		int r = gridRows;
+		int c = gridColumns;
+		Color[][] cur_background = getBackgroundArray();
+
+		pre_background = new Color[r][c];
+
+		for (int row = 0; row < r; row++) {
+			for (int col = 0; col < c; col++) {
+				pre_background[row][col] = cur_background[row][col];
+			}
+		}
+	}
+	
+	// 블럭이 배경으로 옮겨지기 전의 배경에서 공격에 사용될 한 줄을 저장한다. 
+	public void makeAttackLine(int r) {
+		attackLine = pre_background[r];
+	}
+	
+	// 상대 배경의 아래 10줄 중 gray 블럭이 포함된 줄의 수를 세서 공격한 줄 수를 구한다. 
+	public void setAttackLinesNum() {
+		attackLinesNum = 0;
+		for (int row = 10; row < 20; row++) {
+			for (int col = 0; col < gridColumns; col++) {
+				if (opponent_bg[row][col] == Color.gray) {
+					attackLinesNum++;
+					break;
+				}
+			}
+		}
+	}
+	
+	// 상대 배경 아래에 공격 줄을 추가하기전에 상대의 배경을 한 칸 씩 위로 올려준다.
+	public void shiftUp_oppBg() {
+		for (int row = 0; row < gridRows - 1; row++) {
+			for (int col = 0; col < gridColumns; col++) {
+				opponent_bg[row][col] = opponent_bg[row + 1][col];
+			}
+		}
+		
+		// 맨 아래 줄은 null로 채워준다.
+		for (int col = 0; col < gridColumns; col++) {
+			opponent_bg[gridRows - 1][col] = null;
+		}
+	}
+	
+	// 공격할 줄에서 채워진 부분만 gray로 상대의 배경에 채워넣는다.
+	public void attack() {
+		for (int col = 0; col < gridColumns; col++) {
+			if (attackLine[col] != null) {
+				opponent_bg[gridRows - 1][col] = Color.gray;
 			}
 		}
 	}
