@@ -91,11 +91,11 @@ public class OptionForm extends JFrame {
 		
 		// 파일에 저장된 값에 따라 크기 조절 
 		if(confirmedColumn[0] == 0) {
-			updateFrameSize(600, 450);
+			updateFrameSize(600, 460);
 		}else if(confirmedColumn[0] == 1) {
-			updateFrameSize(700, 550);
+			updateFrameSize(720, 540);
 		}else {
-			updateFrameSize(800, 650);
+			updateFrameSize(840, 620);
 		}
 		
 		initControls();

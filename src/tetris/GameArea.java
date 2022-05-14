@@ -42,7 +42,7 @@ public class GameArea extends JPanel {
   // --------------------------------------------------------------------- 초기화관련동작
 	// TODO: 프레임 크기에 따라 GameArea의 x, y 위치가 바뀌어야 함. 
 	private void initThisPanel() {
-		this.setBounds(gfW / 3, gfH / 60, 200, 400);
+		this.setBounds(gfW / 3, gfH / 60, gfW / 3, gfH - 60);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}

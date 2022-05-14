@@ -31,13 +31,13 @@ public class Tetris {
 			// 파일에 저장된 값에 따라 크기 조절 
 			if(data == 0) {
 				w = 600;
-				h = 450;
+				h = 460;
 			}else if(data == 1) {
-				w = 700;
-				h = 550;
+				w = 720;
+				h = 540;
 			}else {
-				w = 800;
-				h = 650;
+				w = 840;
+				h = 620;
 			}
 			
 			fis.close();
