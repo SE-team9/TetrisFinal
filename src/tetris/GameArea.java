@@ -117,47 +117,41 @@ public class GameArea extends JPanel {
 	}
 
 	// level에 따른 가중치 부여
-	public int makeRandom() {
+	public int makeRandom(int level) {
 		Map<String, Double> w = new HashMap<String, Double>();
 		Random r = new Random();
 
-		int level = Tetris.getGameLevel();
+		//int level = Tetris.getGameLevel();
 		double weight, iWeight;
-		int blockNum; // 블럭 번호 (인덱스) 
+		int blockNum;
 
-		if (level == 0) { // easy
+		if (level == 0) {
 			weight = 14.0;
-			iWeight = 16.0; // I형 블럭의 등장 확률 20% 증가
+			iWeight = 16.0;
 			w.put("0", iWeight);
-			
 			for (int i = 1; i < blocks.length; i++) {
 				w.put(Integer.toString(i), weight);
 			}
-			
 			blockNum = Integer.parseInt(getWeightedRandom(w, r));
-			
-		} else if (level == 2) { // hard 
+		} else if (level == 2) {
 			weight = 15.0;
-			iWeight = 10.0; // I형 블럭의 등장 확률 20% 감소 
+			iWeight = 10.0;
 			w.put("0", iWeight);
-			
 			for (int i = 1; i < blocks.length; i++) {
 				w.put(Integer.toString(i), weight);
 			}
-			
 			blockNum = Integer.parseInt(getWeightedRandom(w, r));
-			
 		} else {
 			blockNum = r.nextInt(blocks.length);
 		}
-		
 		return blockNum;
 	}
 
 	// --------------------------------------------------------------------- 블럭생성관련동작
 	// 난이도에 따라 다음 블럭을 정한다.
 	public void updateNextBlock() {
-		int r = makeRandom();
+		int level = Tetris.getGameLevel();
+		int r= makeRandom(level);
 		nextBlock = blocks[r];
 		nextBlock.setShape();
 	}
