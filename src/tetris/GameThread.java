@@ -30,6 +30,7 @@ public class GameThread extends Thread {
 	// ------------------------------ 대전모드용 변수들
 	private int userNum;
 	private AttackLineArea ala;
+	private int time = 100;
 
 	public GameThread(GameForm gf, GameArea ga, NextBlockArea nba) {
 		this.gf = gf;
@@ -85,19 +86,19 @@ public class GameThread extends Thread {
 
 		switch (gameMode) {
 		case 0:
-			startDefaultMode(); // 일반+일반
+			startDefaultMode(); 	// 일반+일반
 			break;
 		case 1:
-			startItemMode(); // 일반+아이템
+			startItemMode(); 		// 일반+아이템
 			break;
 		case 2:
 			startDefaultMode_pvp(); // 대전+일반
 			break;
 		case 3:
-			startItemMode_pvp(); // 대전+아이템
+			startItemMode_pvp(); 	// 대전+아이템
 			break;
 		case 4:
-			// 타임어택모드
+			startTimeAttackMode_pvp(); // 대전+시간제한
 			break;
 		}
 	}
@@ -354,12 +355,11 @@ public class GameThread extends Thread {
 			if (ga.isBlockOutOfBounds()) {
 				JOptionPane.showMessageDialog(null, "Game Over!");
 				gf.setVisible(false);
-				Tetris.showStartup();
 				gf.interrupt_Opp(userNum);
+				Tetris.showStartup();
 				break;
 			}
-			// --------------------------------------------------------- 배경으로 블럭이동 / 완성된 줄
-			// 삭제
+			// --------------------------------------------------------- 배경으로 블럭이동 / 완성된 줄 삭제 / 상대보드로 삭제된 줄 이동
 
 			ga.saveBackground();
 			ga.moveBlockToBackground();
@@ -367,10 +367,7 @@ public class GameThread extends Thread {
 			gf.repaint();
 			gf.repaint_attackLines(userNum);
 
-			// --------------------------------------------------------- 상대보드로 삭제된 줄 이동
-
-			// --------------------------------------------------------- 줄 삭제에 따른 점수,레벨,낙하속도
-			// 업데이트
+			// --------------------------------------------------------- 줄 삭제에 따른 점수,레벨,낙하속도 업데이트
 			if (clearedLineNum > 1) {
 				score += 2 * clearedLineNum + level;
 			} else {
@@ -428,22 +425,20 @@ public class GameThread extends Thread {
 			if (ga.isBlockOutOfBounds()) {
 				JOptionPane.showMessageDialog(null, "Game Over!");
 				gf.setVisible(false);
-				Tetris.showStartup();
 				gf.interrupt_Opp(userNum);
+				Tetris.showStartup();
 				break;
 			}
 
 			if (isItem) {
-				// --------------------------------------------------------- 현재 블럭이 아이템블럭: 아이템
-				// 동작 수행
+				// --------------------------------------------------------- 현재 블럭이 아이템블럭: 아이템 동작 수행
 				ga.twinkleItem();
 				ga.itemFunction();
 				ga.setIsItem(false);
 				isItem = false;
 
 			} else {
-				// --------------------------------------------------------- 현재 블럭이 기본블럭 : 배경으로
-				// 블럭이동 / 다음이 아이템 블럭인지 확인
+				// --------------------------------------------------------- 현재 블럭이 기본블럭 : 배경으로 블럭이동 / 다음이 아이템 블럭인지 확인
 				ga.saveBackground();
 				ga.moveBlockToBackground();
 
@@ -489,6 +484,75 @@ public class GameThread extends Thread {
 			}
 		}
 
+	}
+	
+	// 대전+시간제한
+	private void startTimeAttackMode_pvp() {
+		gf.displayTime(userNum);
+		
+		while (true) {
+			// --------------------------------------------------------- 새로운 블럭생성
+			ga.spawnBlock();
+			ga.updateNextBlock();
+			nba.updateNBA(ga.getNextBlock());
+
+			// --------------------------------------------------------- 한 칸씩 블럭 내리기
+			while (ga.moveBlockDown() && time>0) {
+				score++;
+				gf.updateScore(score, userNum);
+				time--;
+				gf.updateTime(time, userNum);
+
+				try {
+
+					Thread.sleep(interval);
+
+					// 눌렸으면 루프 돌면서 대기
+					while (isPaused) {
+						if (!isPaused) {
+							break;
+						}
+
+					}
+				} catch (InterruptedException ex) {
+					return;
+				}
+			}
+
+			// --------------------------------------------------------- 게임종료확인
+			if (ga.isBlockOutOfBounds() || (time <= 0 && userNum == 1)) {
+				JOptionPane.showMessageDialog(null, "Game Over!");
+				gf.setVisible(false);
+				gf.interrupt_Opp(userNum);
+				Tetris.showStartup();
+				break;
+			}
+			
+			// --------------------------------------------------------- 배경으로 블럭이동 / 완성된 줄 삭제 / 상대보드로 삭제된 줄 이동
+			ga.saveBackground();
+			ga.moveBlockToBackground();
+			clearedLineNum = ga.clearLines_pvp();
+			gf.repaint();
+			gf.repaint_attackLines(userNum);
+
+			// --------------------------------------------------------- 줄 삭제에 따른 점수,레벨,낙하속도 업데이트
+			if (clearedLineNum > 1) {
+				score += 2 * clearedLineNum + level;
+			} else {
+				score += clearedLineNum + level;
+			}
+			gf.updateScore(score, userNum);
+
+			int lvl = totalClearedLine / linePerLevel + 1;
+			if (lvl > level) {
+				level = lvl;
+				gf.updateScore(level, userNum);
+
+				if (interval > 300) {
+					interval -= speedupPerLevel;
+				}
+			}
+		}
 	}
 
 	public void pause() {

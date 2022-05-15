@@ -1,6 +1,4 @@
 package form;
-import tetris.*;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
@@ -11,6 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+
+import tetris.AttackLineArea;
+import tetris.GameArea;
+import tetris.GameThread;
+import tetris.NextBlockArea;
+import tetris.Tetris;
 
 public class GameForm extends JFrame {
 	private int w, h;
@@ -30,6 +34,7 @@ public class GameForm extends JFrame {
 	private JTextArea keyManual2;
 	private AttackLineArea ala;
 	private AttackLineArea ala2;
+	private JLabel lblTime;
 
 	// 처음에 생성자 호출할 때는 모두 기본 값으로 
 	public GameForm(int w, int h) {
@@ -471,6 +476,24 @@ public class GameForm extends JFrame {
 	}
 	
 	// --------------------------------------------------- 대전모드를 위한 함수
+	
+	// 타임어택모드 시간표시, 어차피 시간은 공유되므로 플레이어1일 때만 해당 함수가 호출된다.
+	public void displayTime(int userNum) {
+		if(userNum == 1) {
+			lblTime = new JLabel("Time: 100");
+			lblTime.setBounds(w-w/20, h / 60, 100, 30);
+			this.add(lblTime);
+		}
+	}
+	
+	// 시간 업데이트 
+	// 어차피 남은 시간은 공유되므로, 플레이어1일 때만 시간을 업데이트 한다.
+	public void updateTime(int time, int userNum) {
+		if(userNum == 1) {
+			lblTime.setText("Time: " + time);
+		}
+	}
+	
 	// userNum에 따라 해당하는 플레이어의 점수 업데이트
 	public void updateScore(int score, int userNum) {
 		if (userNum == 1) {
@@ -483,9 +506,9 @@ public class GameForm extends JFrame {
 	// userNum에 따라 해당하는 플레이어의 레벨 업데이트
 	public void updateLevel(int level, int userNum) {
 		if (userNum == 1) {
-			lblLevel.setText("Score: " + level);
+			lblLevel.setText("Level: " + level);
 		} else {
-			lblLevel2.setText("Score: " + level);
+			lblLevel2.setText("Level: " + level);
 		}
 	}
 
