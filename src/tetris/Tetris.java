@@ -1,5 +1,6 @@
 package tetris;
 
+import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileInputStream;
 
@@ -149,7 +150,7 @@ public class Tetris {
 	}
 
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 				// 파일에서 불러온 값에 따라 모든 프레임의 크기 조절 

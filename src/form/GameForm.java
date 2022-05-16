@@ -1,5 +1,4 @@
 package form;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -534,7 +533,7 @@ public class GameForm extends JFrame {
 	
 	// GameForm 프레임 실행
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 			}

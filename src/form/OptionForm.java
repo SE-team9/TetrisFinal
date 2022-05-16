@@ -2,6 +2,7 @@ package form;
 import tetris.*;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -364,7 +365,7 @@ public class OptionForm extends JFrame {
 	
 	// OptionForm 프레임 실행
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 			}
