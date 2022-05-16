@@ -260,7 +260,7 @@ public class GameArea extends JPanel {
 		repaint();
 	}
 
-	private boolean checkBottom() {
+	public boolean checkBottom() {
 		if (block.getBottomEdge() == gridRows) {
 			return false; // stop
 		}
@@ -285,6 +285,7 @@ public class GameArea extends JPanel {
 				}
 			}
 		}
+		
 		return true; // keep going
 	}
 
