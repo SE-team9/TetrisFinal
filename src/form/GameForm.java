@@ -25,7 +25,7 @@ public class GameForm extends JFrame {
 	private JTextArea keyManual;
 	private boolean isPaused = false;
 	
-	// ------------------------------ ´ëÀü¸ğµå¿ë º¯¼öµé
+	// ------------------------------ ëŒ€ì „ëª¨ë“œìš© ë³€ìˆ˜ë“¤
 	private GameArea ga2;
 	private GameThread gt2;
 	private NextBlockArea nba2;
@@ -35,16 +35,14 @@ public class GameForm extends JFrame {
 	private AttackLineArea ala2;
 	private JLabel lblTime;
 
-	// Ã³À½¿¡ »ı¼ºÀÚ È£ÃâÇÒ ¶§´Â ¸ğµÎ ±âº» °ªÀ¸·Î 
-	public GameForm(int w, int h) {
+	public GameForm(int w, int h) { // ê°ì²´ ìƒì„± ì‹œ í¬ê¸° ì„¤ì • 
 		this.w = w;
 		this.h = h;
 		initComponents(w, h);
-		initControls(0); // Á¶ÀÛ Å° ¼³Á¤ 
+		initControls(0); // ì¡°ì‘ í‚¤ ì„¤ì • 
 	}
-	
-	// Tetris¿¡¼­ Àü´Ş ¹ŞÀº ÀÎÀÚ °ª¿¡ µû¶ó Å©±â Á¶Á¤ 
-	public void initComponents(int w, int h) {
+
+	public void initComponents(int w, int h) { // í™”ë©´ ë„ìš¸ ë•Œ í¬ê¸° ì„¤ì • 
 		this.w = w;
 		this.h = h;
 		
@@ -58,7 +56,7 @@ public class GameForm extends JFrame {
 		this.add(nba);
 	}
 	
-	// ´ëÀü¸ğµå¿¡ ÇÊ¿äÇÑ º¯¼öµéÀ» ÃÊ±âÈ­ÇÏ°í ÇÁ·¹ÀÓ¿¡ Ãß°¡
+	// ëŒ€ì „ëª¨ë“œì— í•„ìš”í•œ ë³€ìˆ˜ë“¤ì„ ì´ˆê¸°í™”í•˜ê³  í”„ë ˆì„ì— ì¶”ê°€
 	public void initComponents_pvp(int w, int h) {
 		this.w = w;
 		this.h = h;
@@ -92,9 +90,9 @@ public class GameForm extends JFrame {
 		this.setVisible(false);
 	}
 	
-	// ´ëÀü¸ğµå
+	// ëŒ€ì „ëª¨ë“œ
 	private void initThisFrame_pvp() {
-		this.setSize(w * 2, h); // ´ëÀü¸ğµå´Â °¡·Î ±æÀÌ 2¹è
+		this.setSize(w * 2, h); // ëŒ€ì „ëª¨ë“œëŠ” ê°€ë¡œ ê¸¸ì´ 2ë°°
 		this.setResizable(false);
 		this.setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -111,9 +109,9 @@ public class GameForm extends JFrame {
 		this.add(lblLevel);
 	}
 	
-	// ´ëÀü¸ğµå
+	// ëŒ€ì „ëª¨ë“œ
 	private void initDisplay_pvp() {
-		// ¿ŞÂÊ ÇÃ·¹ÀÌ¾î Á¡¼ö, ·¹º§
+		// ì™¼ìª½ í”Œë ˆì´ì–´ ì ìˆ˜, ë ˆë²¨
 		lblScore = new JLabel("Score: 0");
 		lblLevel = new JLabel("Level: 0");
 		lblScore.setBounds(w*11/15, h / 3, 100, 30);
@@ -121,7 +119,7 @@ public class GameForm extends JFrame {
 		this.add(lblScore);
 		this.add(lblLevel);
 
-		// ¿À¸¥ÂÊ ÇÃ·¹ÀÌ¾î Á¡¼ö, ·¹º§
+		// ì˜¤ë¥¸ìª½ í”Œë ˆì´ì–´ ì ìˆ˜, ë ˆë²¨
 		lblScore2 = new JLabel("Score: 0");
 		lblLevel2 = new JLabel("Level: 0");
 		lblScore2.setBounds(w*11/15 + w, h / 3, 100, 30);
@@ -130,7 +128,7 @@ public class GameForm extends JFrame {
 		this.add(lblLevel2);
 	}
 
-	// Tetris¿¡¼­ Àü´Ş ¹ŞÀº ÀÎÀÚ °ª¿¡ µû¶ó Á¶ÀÛ Å° º¯°æÇÏ±â
+	// Tetrisì—ì„œ ì „ë‹¬ ë°›ì€ ì¸ì ê°’ì— ë”°ë¼ ì¡°ì‘ í‚¤ ë³€ê²½í•˜ê¸°
 	public void initControls(int keyMode) {
 		InputMap im = this.getRootPane().getInputMap();
 		ActionMap am = this.getRootPane().getActionMap();
@@ -144,16 +142,16 @@ public class GameForm extends JFrame {
 			im.put(KeyStroke.getKeyStroke("DOWN"), "downOneLine");
 			im.put(KeyStroke.getKeyStroke("SPACE"), "downToEnd");
 
-			keyManual = new JTextArea(" ¿ŞÂÊ ÀÌµ¿: ¡ç \n"
-					+ " ¿À¸¥ÂÊ ÀÌµ¿: ¡æ \n"
-					+ " ÇÑÄ­ ¾Æ·¡·Î ÀÌµ¿: ¡é \n"
-					+ " ºí·° È¸Àü: ¡è \n"
-					+ " ÇÑ¹ø¿¡ ¹ØÀ¸·Î ÀÌµ¿: SPACE \n"
-					+ " °ÔÀÓ Á¤Áö/Àç°³: q \n"
-					+ " °ÔÀÓ Á¾·á: e  \n");
+			keyManual = new JTextArea(" ì™¼ìª½ ì´ë™: â† \n"
+					+ " ì˜¤ë¥¸ìª½ ì´ë™: â†’ \n"
+					+ " í•œì¹¸ ì•„ë˜ë¡œ ì´ë™: â†“ \n"
+					+ " ë¸”ëŸ­ íšŒì „: â†‘ \n"
+					+ " í•œë²ˆì— ë°‘ìœ¼ë¡œ ì´ë™: SPACE \n"
+					+ " ê²Œì„ ì •ì§€/ì¬ê°œ: q \n"
+					+ " ê²Œì„ ì¢…ë£Œ: e  \n");
 		}
 		else {
-			im.clear(); // ´Ù¸¥ Å°¸ğµå¿¡¼­ ¼³Á¤Çß´ø °Å ÃÊ±âÈ­
+			im.clear(); // ë‹¤ë¥¸ í‚¤ëª¨ë“œì—ì„œ ì„¤ì •í–ˆë˜ ê±° ì´ˆê¸°í™”
 			
 			im.put(KeyStroke.getKeyStroke("D"), "right");
 			im.put(KeyStroke.getKeyStroke("A"), "left");
@@ -161,16 +159,16 @@ public class GameForm extends JFrame {
 			im.put(KeyStroke.getKeyStroke("S"), "downOneLine");
 			im.put(KeyStroke.getKeyStroke("ENTER"), "downToEnd");
 			
-			keyManual = new JTextArea(" ¿ŞÂÊ ÀÌµ¿: a \n"
-					+ " ¿À¸¥ÂÊ ÀÌµ¿: d \n"
-					+ " ÇÑÄ­ ¾Æ·¡·Î ÀÌµ¿: s \n"
-					+ " ºí·° È¸Àü: w \n"
-					+ " ÇÑ¹ø¿¡ ¹ØÀ¸·Î ÀÌµ¿: ENTER \n"
-					+ " °ÔÀÓ Á¤Áö/Àç°³: q \n"
-					+ " °ÔÀÓ Á¾·á: e  \n");
+			keyManual = new JTextArea(" ì™¼ìª½ ì´ë™: a \n"
+					+ " ì˜¤ë¥¸ìª½ ì´ë™: d \n"
+					+ " í•œì¹¸ ì•„ë˜ë¡œ ì´ë™: s \n"
+					+ " ë¸”ëŸ­ íšŒì „: w \n"
+					+ " í•œë²ˆì— ë°‘ìœ¼ë¡œ ì´ë™: ENTER \n"
+					+ " ê²Œì„ ì •ì§€/ì¬ê°œ: q \n"
+					+ " ê²Œì„ ì¢…ë£Œ: e  \n");
 		}
 		
-		// °øÅë (ÁßÁö, Á¾·á, µÚ·Î°¡±â)
+		// ê³µí†µ (ì¤‘ì§€, ì¢…ë£Œ, ë’¤ë¡œê°€ê¸°)
 		im.put(KeyStroke.getKeyStroke("Q"), "quit");
 		im.put(KeyStroke.getKeyStroke("E"), "exit");
 		im.put(KeyStroke.getKeyStroke("ESCAPE"), "back");
@@ -203,7 +201,7 @@ public class GameForm extends JFrame {
 			}
 		});
 
-		// TODO: Å° ÀÔ·Â¿¡ ÀÇÇØ ÇÑÄ­ ³»·Á°¥ ¶§µµ Á¡¼ö°¡ 1Á¡ Áõ°¡ÇÏµµ·Ï 
+		// TODO: í‚¤ ì…ë ¥ì— ì˜í•´ í•œì¹¸ ë‚´ë ¤ê°ˆ ë•Œë„ ì ìˆ˜ê°€ 1ì  ì¦ê°€í•˜ë„ë¡ 
 		am.put("downOneLine", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -213,7 +211,7 @@ public class GameForm extends JFrame {
 			}
 		});
 
-		// TODO: Å° ÀÔ·Â¿¡ ÀÇÇØ ÇÑ¹ø¿¡ ¶³¾îÁö¸é 15Á¡ Áõ°¡ÇÏµµ·Ï 
+		// TODO: í‚¤ ì…ë ¥ì— ì˜í•´ í•œë²ˆì— ë–¨ì–´ì§€ë©´ 15ì  ì¦ê°€í•˜ë„ë¡ 
 		am.put("downToEnd", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -240,7 +238,7 @@ public class GameForm extends JFrame {
 		am.put("exit", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gt.interrupt(); // °ÔÀÓ ½º·¹µå Á¾·á 
+				gt.interrupt(); // ê²Œì„ ìŠ¤ë ˆë“œ ì¢…ë£Œ 
 
 				setVisible(false);
 				Tetris.showStartup();
@@ -251,7 +249,7 @@ public class GameForm extends JFrame {
 		am.put("back", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gt.interrupt(); // °ÔÀÓ ½º·¹µå Á¾·á 
+				gt.interrupt(); // ê²Œì„ ìŠ¤ë ˆë“œ ì¢…ë£Œ 
 
 				setVisible(false);
 				Tetris.showStartup();
@@ -259,7 +257,7 @@ public class GameForm extends JFrame {
 		});
 	}
 
-	// ´ëÀü¸ğµå Å° ¹ÙÀÎµù
+	// ëŒ€ì „ëª¨ë“œ í‚¤ ë°”ì¸ë”©
 	public void initControls_pvp() {
 		InputMap im = this.getRootPane().getInputMap();
 		ActionMap am = this.getRootPane().getActionMap();
@@ -272,13 +270,13 @@ public class GameForm extends JFrame {
 		im.put(KeyStroke.getKeyStroke("S"), "downOneLine_1");
 		im.put(KeyStroke.getKeyStroke("SPACE"), "downToEnd_1");
 
-		keyManual = new JTextArea(" ¿ŞÂÊ ÀÌµ¿: a \n" + 
-								  " ¿À¸¥ÂÊ ÀÌµ¿: d \n" + 
-								  " ÇÑÄ­ ¾Æ·¡·Î ÀÌµ¿: s \n" + 
-								  " ºí·° È¸Àü: w \n" + 
-								  " ÇÑ¹ø¿¡ ¹ØÀ¸·Î ÀÌµ¿: SPACE \n" + 
-								  " °ÔÀÓ Á¤Áö/Àç°³: q \n" + 
-								  " °ÔÀÓ Á¾·á: e  \n");
+		keyManual = new JTextArea(" ì™¼ìª½ ì´ë™: a \n" + 
+								  " ì˜¤ë¥¸ìª½ ì´ë™: d \n" + 
+								  " í•œì¹¸ ì•„ë˜ë¡œ ì´ë™: s \n" + 
+								  " ë¸”ëŸ­ íšŒì „: w \n" + 
+								  " í•œë²ˆì— ë°‘ìœ¼ë¡œ ì´ë™: SPACE \n" + 
+								  " ê²Œì„ ì •ì§€/ì¬ê°œ: q \n" + 
+								  " ê²Œì„ ì¢…ë£Œ: e  \n");
 
 		im.put(KeyStroke.getKeyStroke("RIGHT"), "right_2");
 		im.put(KeyStroke.getKeyStroke("LEFT"), "left_2");
@@ -286,25 +284,25 @@ public class GameForm extends JFrame {
 		im.put(KeyStroke.getKeyStroke("DOWN"), "downOneLine_2");
 		im.put(KeyStroke.getKeyStroke("ENTER"), "downToEnd_2");
 
-		keyManual2 = new JTextArea(" ¿ŞÂÊ ÀÌµ¿: ¡ç \n" + 
-								   " ¿À¸¥ÂÊ ÀÌµ¿: ¡æ \n" + 
-								   " ÇÑÄ­ ¾Æ·¡·Î ÀÌµ¿: ¡é \n" + 
-								   " ºí·° È¸Àü: ¡è \n" + 
-								   " ÇÑ¹ø¿¡ ¹ØÀ¸·Î ÀÌµ¿: ENTER \n" + 
-								   " °ÔÀÓ Á¤Áö/Àç°³: q \n" + 
-								   " °ÔÀÓ Á¾·á: e  \n");
+		keyManual2 = new JTextArea(" ì™¼ìª½ ì´ë™: â† \n" + 
+								   " ì˜¤ë¥¸ìª½ ì´ë™: â†’ \n" + 
+								   " í•œì¹¸ ì•„ë˜ë¡œ ì´ë™: â†“ \n" + 
+								   " ë¸”ëŸ­ íšŒì „: â†‘ \n" + 
+								   " í•œë²ˆì— ë°‘ìœ¼ë¡œ ì´ë™: ENTER \n" + 
+								   " ê²Œì„ ì •ì§€/ì¬ê°œ: q \n" + 
+								   " ê²Œì„ ì¢…ë£Œ: e  \n");
 
-		// °øÅë (ÁßÁö, Á¾·á, µÚ·Î°¡±â)
+		// ê³µí†µ (ì¤‘ì§€, ì¢…ë£Œ, ë’¤ë¡œê°€ê¸°)
 		im.put(KeyStroke.getKeyStroke("Q"), "quit");
 		im.put(KeyStroke.getKeyStroke("E"), "exit");
 		im.put(KeyStroke.getKeyStroke("ESCAPE"), "back");
 
-		// ¿ŞÂÊ ÇÃ·¹ÀÌ¾î Å°¸Å´º¾ó
+		// ì™¼ìª½ í”Œë ˆì´ì–´ í‚¤ë§¤ë‰´ì–¼
 		keyManual.setBounds(w / 30, h - 300, 160, 130);
 		keyManual.setFocusable(false);
 		this.add(keyManual);
 
-		// ¿À¸¥ÂÊ ÇÃ·¹ÀÌ¾î Å°¸Å´º¾ó
+		// ì˜¤ë¥¸ìª½ í”Œë ˆì´ì–´ í‚¤ë§¤ë‰´ì–¼
 		keyManual2.setBounds(w / 30 + w, h - 300, 160, 130);
 		keyManual2.setFocusable(false);
 		this.add(keyManual2);
@@ -352,7 +350,7 @@ public class GameForm extends JFrame {
 					ga2.rotateBlock();
 			}
 		});
-		// TODO: Å° ÀÔ·Â¿¡ ÀÇÇØ ÇÑÄ­ ³»·Á°¥ ¶§µµ Á¡¼ö°¡ 1Á¡ Áõ°¡ÇÏµµ·Ï
+		// TODO: í‚¤ ì…ë ¥ì— ì˜í•´ í•œì¹¸ ë‚´ë ¤ê°ˆ ë•Œë„ ì ìˆ˜ê°€ 1ì  ì¦ê°€í•˜ë„ë¡
 		am.put("downOneLine_1", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -363,7 +361,7 @@ public class GameForm extends JFrame {
 				}
 			}
 		});
-		// TODO: Å° ÀÔ·Â¿¡ ÀÇÇØ ÇÑÄ­ ³»·Á°¥ ¶§µµ Á¡¼ö°¡ 1Á¡ Áõ°¡ÇÏµµ·Ï
+		// TODO: í‚¤ ì…ë ¥ì— ì˜í•´ í•œì¹¸ ë‚´ë ¤ê°ˆ ë•Œë„ ì ìˆ˜ê°€ 1ì  ì¦ê°€í•˜ë„ë¡
 		am.put("downOneLine_2", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -411,7 +409,7 @@ public class GameForm extends JFrame {
 		am.put("exit", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gt.interrupt(); // °ÔÀÓ ½º·¹µå Á¾·á
+				gt.interrupt(); // ê²Œì„ ìŠ¤ë ˆë“œ ì¢…ë£Œ
 				gt2.interrupt();
 
 				setVisible(false);
@@ -422,7 +420,7 @@ public class GameForm extends JFrame {
 		am.put("back", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gt.interrupt(); // °ÔÀÓ ½º·¹µå Á¾·á
+				gt.interrupt(); // ê²Œì„ ìŠ¤ë ˆë“œ ì¢…ë£Œ
 				gt2.interrupt();
 
 				setVisible(false);
@@ -431,31 +429,31 @@ public class GameForm extends JFrame {
 		});
 	}
 	
-	// °ÔÀÓ ½º·¹µå ½ÃÀÛ
+	// ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘
 	public void startGame() {
-		// °ÔÀÓÀÌ ´Ù½Ã ½ÃÀÛµÉ ¶§¸¶´Ù ÃÊ±âÈ­ µÇ¾î¾ß ÇÏ´Â °ÍµéÀ» ÃÊ±âÈ­ÇÑ´Ù. 
+		// ê²Œì„ì´ ë‹¤ì‹œ ì‹œì‘ë  ë•Œë§ˆë‹¤ ì´ˆê¸°í™” ë˜ì–´ì•¼ í•˜ëŠ” ê²ƒë“¤ì„ ì´ˆê¸°í™”í•œë‹¤. 
 		ga.initGameArea(); 
 		nba.initNextBlockArea(); 
 		
-		// °ÔÀÓ ½º·¹µå ½ÃÀÛ
+		// ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘
 		gt = new GameThread(this, ga, nba);
 		gt.start();
 	}
 	
-	// ´ëÀü¸ğµå °ÔÀÓ ½º·¹µå ½ÃÀÛ
+	// ëŒ€ì „ëª¨ë“œ ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘
 	public void startGame_pvp() {
-		// °ÔÀÓÀÌ ´Ù½Ã ½ÃÀÛµÉ ¶§¸¶´Ù ÃÊ±âÈ­ µÇ¾î¾ß ÇÏ´Â °ÍµéÀ» ÃÊ±âÈ­ÇÑ´Ù.
+		// ê²Œì„ì´ ë‹¤ì‹œ ì‹œì‘ë  ë•Œë§ˆë‹¤ ì´ˆê¸°í™” ë˜ì–´ì•¼ í•˜ëŠ” ê²ƒë“¤ì„ ì´ˆê¸°í™”í•œë‹¤.
 		ga.initGameArea_pvp();
 		ga2.initGameArea_pvp();
 		
 		nba.initNextBlockArea();
 		nba2.initNextBlockArea();
 
-		// »ó´ëÀÇ ¹è°æ Á¤º¸¸¦ È®ÀÎÇØ¾ß ÇÏ¹Ç·Î, ÀÎ¼ö·Î Àü´ŞÇØ¼­ º¯¼ö¿¡ ÇÒ´ç ÇØÁØ´Ù.
+		// ìƒëŒ€ì˜ ë°°ê²½ ì •ë³´ë¥¼ í™•ì¸í•´ì•¼ í•˜ë¯€ë¡œ, ì¸ìˆ˜ë¡œ ì „ë‹¬í•´ì„œ ë³€ìˆ˜ì— í• ë‹¹ í•´ì¤€ë‹¤.
 		ga.setOpponent_bg(ga2.getBackgroundArray());
 		ga2.setOpponent_bg(ga.getBackgroundArray());
 		
-		// ÀÚ½ÅÀÇ ¹è°æ Á¤º¸¸¦ È®ÀÎÇØ¾ß ÇÏ¹Ç·Î, ÀÎ¼ö·Î Àü´ŞÇØ¼­ º¯¼ö¿¡ ÇÒ´ç ÇØÁØ´Ù.
+		// ìì‹ ì˜ ë°°ê²½ ì •ë³´ë¥¼ í™•ì¸í•´ì•¼ í•˜ë¯€ë¡œ, ì¸ìˆ˜ë¡œ ì „ë‹¬í•´ì„œ ë³€ìˆ˜ì— í• ë‹¹ í•´ì¤€ë‹¤.
 		ala.set_bg(ga.getBackgroundArray());
 		ala2.set_bg(ga2.getBackgroundArray());
 		
@@ -474,9 +472,9 @@ public class GameForm extends JFrame {
 		lblLevel.setText("Level: " + level);
 	}
 	
-	// --------------------------------------------------- ´ëÀü¸ğµå¸¦ À§ÇÑ ÇÔ¼ö
+	// --------------------------------------------------- ëŒ€ì „ëª¨ë“œë¥¼ ìœ„í•œ í•¨ìˆ˜
 	
-	// Å¸ÀÓ¾îÅÃ¸ğµå ½Ã°£Ç¥½Ã, ¾îÂ÷ÇÇ ½Ã°£Àº °øÀ¯µÇ¹Ç·Î ÇÃ·¹ÀÌ¾î1ÀÏ ¶§¸¸ ÇØ´ç ÇÔ¼ö°¡ È£ÃâµÈ´Ù.
+	// íƒ€ì„ì–´íƒëª¨ë“œ ì‹œê°„í‘œì‹œ, ì–´ì°¨í”¼ ì‹œê°„ì€ ê³µìœ ë˜ë¯€ë¡œ í”Œë ˆì´ì–´1ì¼ ë•Œë§Œ í•´ë‹¹ í•¨ìˆ˜ê°€ í˜¸ì¶œëœë‹¤.
 	public void displayTime(int userNum) {
 		if(userNum == 1) {
 			lblTime = new JLabel("Time: 100");
@@ -485,15 +483,15 @@ public class GameForm extends JFrame {
 		}
 	}
 	
-	// ½Ã°£ ¾÷µ¥ÀÌÆ® 
-	// ¾îÂ÷ÇÇ ³²Àº ½Ã°£Àº °øÀ¯µÇ¹Ç·Î, ÇÃ·¹ÀÌ¾î1ÀÏ ¶§¸¸ ½Ã°£À» ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+	// ì‹œê°„ ì—…ë°ì´íŠ¸ 
+	// ì–´ì°¨í”¼ ë‚¨ì€ ì‹œê°„ì€ ê³µìœ ë˜ë¯€ë¡œ, í”Œë ˆì´ì–´1ì¼ ë•Œë§Œ ì‹œê°„ì„ ì—…ë°ì´íŠ¸ í•œë‹¤.
 	public void updateTime(int time, int userNum) {
 		if(userNum == 1) {
 			lblTime.setText("Time: " + time);
 		}
 	}
 	
-	// userNum¿¡ µû¶ó ÇØ´çÇÏ´Â ÇÃ·¹ÀÌ¾îÀÇ Á¡¼ö ¾÷µ¥ÀÌÆ®
+	// userNumì— ë”°ë¼ í•´ë‹¹í•˜ëŠ” í”Œë ˆì´ì–´ì˜ ì ìˆ˜ ì—…ë°ì´íŠ¸
 	public void updateScore(int score, int userNum) {
 		if (userNum == 1) {
 			lblScore.setText("Score: " + score);
@@ -502,7 +500,7 @@ public class GameForm extends JFrame {
 		}
 	}
 
-	// userNum¿¡ µû¶ó ÇØ´çÇÏ´Â ÇÃ·¹ÀÌ¾îÀÇ ·¹º§ ¾÷µ¥ÀÌÆ®
+	// userNumì— ë”°ë¼ í•´ë‹¹í•˜ëŠ” í”Œë ˆì´ì–´ì˜ ë ˆë²¨ ì—…ë°ì´íŠ¸
 	public void updateLevel(int level, int userNum) {
 		if (userNum == 1) {
 			lblLevel.setText("Level: " + level);
@@ -511,7 +509,7 @@ public class GameForm extends JFrame {
 		}
 	}
 
-	// °ÔÀÓÀÌ ³¡³­ °æ¿ì »ó´ë ÇÃ·¹ÀÌ¾îÀÇ ½º·¹µå¸¦ Á¾·á½ÃÅ°±â À§ÇÑ ÇÔ¼ö
+	// ê²Œì„ì´ ëë‚œ ê²½ìš° ìƒëŒ€ í”Œë ˆì´ì–´ì˜ ìŠ¤ë ˆë“œë¥¼ ì¢…ë£Œì‹œí‚¤ê¸° ìœ„í•œ í•¨ìˆ˜
 	public void interrupt_Opp(int userNum) {
 		if (userNum == 1) {
 			gt2.interrupt();
@@ -520,7 +518,7 @@ public class GameForm extends JFrame {
 		}
 	}
 
-	// »èÁ¦µÈ ÁÙÀ» »ó´ë¿¡°Ô ³Ñ°Ü¼­ °ø°İÇÑ ÈÄ, »ó´ëÀÇ ¹è°æ, °ø°İ¹ŞÀº ÁÙÀ» ´Ù½Ã ±×·ÁÁÖ±â À§ÇÑ ÇÔ¼ö 
+	// ì‚­ì œëœ ì¤„ì„ ìƒëŒ€ì—ê²Œ ë„˜ê²¨ì„œ ê³µê²©í•œ í›„, ìƒëŒ€ì˜ ë°°ê²½, ê³µê²©ë°›ì€ ì¤„ì„ ë‹¤ì‹œ ê·¸ë ¤ì£¼ê¸° ìœ„í•œ í•¨ìˆ˜ 
 	public void repaint_attackLines(int userNum) {
 		if (userNum == 1) {
 			ga2.repaint();
@@ -531,7 +529,7 @@ public class GameForm extends JFrame {
 		}
 	}
 	
-	// GameForm ÇÁ·¹ÀÓ ½ÇÇà
+	// GameForm í”„ë ˆì„ ì‹¤í–‰
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
