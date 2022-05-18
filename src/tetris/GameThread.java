@@ -106,7 +106,7 @@ public class GameThread extends Thread {
 				nba.updateNBA(ga.getNextBlock()); // 다음 블럭 표시
 		
 				// 블럭이 위쪽 경계를 넘지 않으면 계속 낙하 
-				while (ga.moveBlockDown()) {
+				while (ga.moveBlockDown()) { 
 					score++; // 한 단위씩 계속 증가 
 					gf.updateScore(score);
 					
@@ -140,7 +140,7 @@ public class GameThread extends Thread {
 				checkCL(); // 삭제된 줄 수에 따라 점수 갱신 
 				checkLevel(); // 레벨에 따라 점수 및 속도 갱신 
 				
-				// linePerItem 이상 줄 삭제하면, 다음 블럭을 아이템으로 설정해두기 
+				// linePerItem 이상 줄 삭제하면, 다음 블럭을 아이템으로 설정하기  
 				checkItem();
 			}
 		}
@@ -212,7 +212,7 @@ public class GameThread extends Thread {
 				nba.setIsItem(false);
 				
 				curIsItem = true; 
-				ga.setIsItem(true); // 아이템 등장 
+				ga.setIsItem(true); // 이제 아이템 등장 
 			}
 		}
 	}
@@ -224,7 +224,7 @@ public class GameThread extends Thread {
 			itemCount = temp; // 아이템이 등장한 횟수 갱신 
 			
 			System.out.println("itemCount: " + itemCount);
-			nextIsItem = true; // 다음 블럭으로 아이템 설정 
+			nextIsItem = true; // 다음 블럭을 아이템으로 설정 
 		}
 	}
 	

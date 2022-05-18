@@ -49,23 +49,23 @@ public class TetrisBlock {
 		}
 	}
 	
+	// 블럭의 초기 낙하 위치를 랜덤으로 
 	public void spawn(int gridWidth) {
-		Random r =new Random();
-		// 보드판 맨 윗줄의 가운데에서 새 블록이 떨어지도록
-		y = - getHeight();
-		x = r.nextInt(gridWidth-getWidth());
+		Random r = new Random();
+		x = r.nextInt(gridWidth - getWidth());
+		y = -getHeight();
 	}
 	
+	// 블럭의 초기 방향을 랜덤으로 
 	public void setShape() {
-		Random r =new Random();
-		// x, y 위치 정하기 전에 블록 방향과 크기 먼저 초기화
-		// 랜덤하게 회전된 형태로 형태로 생성
+		Random r = new Random();
 		currentRotation = r.nextInt(shapes.length);
 		shape = shapes[currentRotation];
 	}
 
 	public int[][] getShape() { return shape; }
 	public Color getColor() { return color; }
+	
 	// 블럭 색 설정
 	public void setColor(int colorNum) { this.color = availableColors[colorNum]; }
 	public void setColor(Color color) {	this.color = color; }
