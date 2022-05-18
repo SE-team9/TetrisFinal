@@ -19,11 +19,6 @@ class OptionFormTest {
 	}
 
 	@Test
-	void testGetFrameSize() {
-		assertNotNull(of.getFrameSize());
-	}
-
-	@Test
 	void testGetCurrentKeyMode() {
 		int km = of.getCurrentColorMode();
 		assertTrue(km == 0 || km == 1);

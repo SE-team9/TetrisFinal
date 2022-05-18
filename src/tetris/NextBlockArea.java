@@ -12,48 +12,46 @@ public class NextBlockArea extends JPanel {
 	private int width; // NextBlockArea의 크기 
 	private TetrisBlock nextBlock;
 	private int gridCellSize;
-	private boolean curIsItem = false;  // 아이템 블럭인지 확인하는 변수
+	private boolean curIsItem = false; // 아이템 블럭인지 확인하는 변수
 
-	public NextBlockArea(int gfW, int gfH, GameArea ga) {
-		initThisPanel(gfW, gfH);
+	public NextBlockArea(int w, int h, GameArea ga) {
+		initThisPanel(w, h);
 		
 		nextBlock = ga.getNextBlock();
 		gridCellSize = ga.getGridCellSize();
 	}
 	
-	private void updatePanelSize() {
-		try {
-			File file = new File("settings.txt");
-			if(!file.exists()) { 
-				file.createNewFile(); 
-				System.out.println("Create new file.");
-			};
-			
-			FileInputStream fis = new FileInputStream(file);
-			int data = fis.read();
-			
-			// 파일에 저장된 값에 따라 크기 조절
-			if(data == 0) {
-				this.width = 120;
-			}else if(data == 1) {
-				this.width = 140;
-			}else {
-				this.width = 160;
-			}
-			
-			fis.close();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	// 대전 모드
+	public NextBlockArea(int w, int h, GameArea ga, int xGap) {
+		initThisPanel(w, h, xGap);
+		
+		nextBlock = ga.getNextBlock();
+		gridCellSize = ga.getGridCellSize();
 	}
 
-	private void initThisPanel(int gfW, int gfH) {
+	private void initThisPanel(int w, int h) {
 		updatePanelSize(); // width 초기화 
-		
-		this.setBounds(gfW / 60, gfH / 60, width, width);
+		this.setBounds(w / 60, h / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	// 대전 모드 
+	private void initThisPanel(int w, int h, int xGap) {
+		this.setBounds(w / 15 + xGap, h / 60, width, width);
+		this.setBackground(new Color(238, 238, 238));
+		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	private void updatePanelSize() {
+		int data = Tetris.getFrameSize();
+		if(data == 0) {
+			this.width = 120;
+		}else if(data == 1) {
+			this.width = 140;
+		}else {
+			this.width = 160;
+		}
 	}
 	
 	public void initNextBlockArea() {

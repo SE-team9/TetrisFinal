@@ -12,6 +12,7 @@ import java.util.Random;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
+import form.OptionForm;
 import tetrisblocks.*;
 import tetrisitems.*;
 
@@ -28,7 +29,6 @@ import tetrisitems.*;
 
 public class GameArea extends JPanel {
 	private int w, h; // GameArea의 크기 
-	
 	private int gridRows;
 	private int gridColumns;
 	private int gridCellSize;
@@ -37,9 +37,15 @@ public class GameArea extends JPanel {
 	private Color[][] background;
 	private TetrisBlock[] blocks;
 	private TetrisBlock[] items;
-	
 	private TetrisBlock block;
 	private TetrisBlock nextBlock;
+	
+	// 대전모드용 변수들
+	private int xGap; 				
+	private Color[][] opponent_bg; 		// 상대의 배경
+	private Color[][] pre_background; 	// 블럭이 배경으로 이동하기 전 배경
+	private Color[] attackLine; 		// 공격에 사용될 줄
+	private int attackLinesNum; 		// 공격한 줄 수
 
 	// 2차원 배열 생성 시, 칼럼 크기 지정은 필수 (그래서 인자로 전달 받음)
 	public GameArea(int gfW, int gfH, int columns) {
@@ -57,45 +63,49 @@ public class GameArea extends JPanel {
 		updateNextBlock();
 	}
 	
-	// --------------------------------------------------------------- 초기화 
-	
-	// 프레임 크기에 따라 패널의 크기도 변경 (20행 10열은 그대로지만 셀의 크기가 바뀐다)
-	private void updatePanelSize() {
-		try {
-			File file = new File("settings.txt");
-			if(!file.exists()) { 
-				file.createNewFile(); 
-				System.out.println("Create new file.");
-			};
-			
-			FileInputStream fis = new FileInputStream(file);
-			int data = fis.read();
-			
-			// 파일에 저장된 값에 따라 크기 조절 
-			if(data == 0) {
-				this.w = 200;
-				this.h = 400;
-			}else if(data == 1) {
-				this.w = 250;
-				this.h = 500;
-			}else {
-				this.w = 300;
-				this.h = 600;
-			}
-			
-			fis.close();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	// 대전 모드 
+	public GameArea(int gfW, int gfH, int columns, int xGap) {
+		this.xGap = xGap;
+		initThisPanel(gfW, gfH, xGap);
+		initBlocks();
+		
+		gridColumns = columns;
+		gridCellSize = w / gridColumns;
+		gridRows = h / gridCellSize;
+		
+		curIsItem = false;
+		updateNextBlock();
 	}
 
+	// --------------------------------------------------------------- 초기화 
+
 	private void initThisPanel(int gfW, int gfH) {
-		updatePanelSize(); // 설정에 따라 w, h 초기화 
-		
-		this.setBounds(gfW / 3, gfH / 60, w, h);
+		updatePanelSize(); // GameArea 크기 변경  
+		this.setBounds(gfW / 3, gfH / 60, w, h); // GameForm 크기에 따라 위치 변경  
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	// 대전 모드 
+	private void initThisPanel(int gfW, int gfH, int xGap) {
+		this.setBounds(gfW / 3 + xGap, gfH / 60, gfW / 3, gfH - 60);
+		this.setBackground(new Color(238, 238, 238));
+		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	// 프레임 크기에 따라 패널의 크기도 변경 (20행 10열은 그대로지만 셀의 크기 변경)
+	private void updatePanelSize() {
+		int data = Tetris.getFrameSize();
+		if(data == 0) {
+			this.w = 200;
+			this.h = 400;
+		}else if(data == 1) {
+			this.w = 250;
+			this.h = 500;
+		}else {
+			this.w = 300;
+			this.h = 600;
+		}
 	}
 
 	public void initBackgroundArray() {
@@ -112,10 +122,19 @@ public class GameArea extends JPanel {
 	
 	// 게임 스레드 시작할 때마다 상태 업데이트 
 	public void initGameArea() {
-		initBackgroundArray();
-		
+		initBackgroundArray(); // 시작할 때마다 배경 초기화
 		curIsItem = false;
 		updateNextBlock();
+	}
+	
+	// 대전모드
+	public void initGameArea_pvp() {
+		initBackgroundArray(); 
+		curIsItem = false;
+		updateNextBlock(); 
+		
+		//initThisPanel(xGap);
+		attackLinesNum = 0; // 이 부분만 추가됨. 
 	}
 	
 	public void setItemFlag(boolean flag) {
@@ -277,7 +296,7 @@ public class GameArea extends JPanel {
 		repaint();
 	}
 
-	private boolean checkBottom() {
+	public boolean checkBottom() {
 		if(block.getBottomEdge() == gridRows) {
 			return false; // stop
 		}
@@ -557,7 +576,7 @@ public class GameArea extends JPanel {
 		int linesCleared = 0;
 
 		for (int r = gridRows - 1; r >= 0; r--) {
-			lineFilled = true;
+			lineFilled = true; // 행마다 상태 업데이트
 
 			for (int c = 0; c < gridColumns; c++) {
 				if (background[r][c] == null) {
@@ -567,21 +586,120 @@ public class GameArea extends JPanel {
 			}
 
 			if (lineFilled) {
-				twinkleCL(r);
-
 				linesCleared++;
+				
+				twinkleCL(r);
+				updateGameArea(r);
 
-				clearLine(r);
-				shiftDown(r);
-				clearLine(0);
-
-				r++; // 줄이 삭제된 바로 그 행부터 다시 검사 
-
-				repaint();
+				r++; // 줄이 삭제된 바로 그 행부터 다시 검사
 			}
 		}
 
 		return linesCleared;
+	}
+	
+	// 대전모드
+	public int clearLines_pvp() {
+		boolean lineFilled;
+		int linesCleared = 0;
+		int num = 0;
+
+		for (int r = gridRows - 1; r >= 0; r--) {
+			lineFilled = true;  
+			
+			for (int c = 0; c < gridColumns; c++) {
+				if (background[r][c] == null) {
+					lineFilled = false;
+					break;
+				}
+			}
+
+			if (lineFilled) {
+				linesCleared++;
+				
+				// 공격에 사용될 줄 생성! 
+				// 블럭이 배경으로 옮겨지기 전의 배경에서 가져온다. 
+				makeAttackLine(r - num); 
+				
+				twinkleCL(r);
+				updateGameArea(r);
+
+				// TODO: 현재 공격한 줄 수를 더해서 10줄을 넘으면, 제일 아래쪽 부분을 잘라내고 추가함.  
+				setAttackLinesNum();
+				if (attackLinesNum < 10) {
+					shiftUp_oppBg();
+					attack();
+				}
+				
+				r++;
+				num++;
+			}
+		}
+		
+		return linesCleared;
+	}
+	
+	// ---------------------------------------------------------------- 대전모드를 위한 동작
+
+	// 블럭이 배경으로 옮겨지기 전의 배경에서 공격에 사용될 한 줄을 저장한다. 
+	public void makeAttackLine(int r) {
+		attackLine = pre_background[r];
+	}
+
+	// 상대 배경의 아래 10줄 중 gray 블럭이 포함된 줄의 수를 세서 공격한 줄 수를 구한다. 
+	public void setAttackLinesNum() {
+		attackLinesNum = 0;
+		for (int row = 10; row < 20; row++) {
+			for (int col = 0; col < gridColumns; col++) {
+				if (opponent_bg[row][col] == Color.gray) {
+					attackLinesNum++;
+					break;
+				}
+			}
+		}
+	}
+
+	// 상대 배경 아래에 공격 줄을 추가하기 전에 상대의 배경을 한 칸 씩 위로 올려준다.
+	public void shiftUp_oppBg() {
+		for (int row = 0; row < gridRows - 1; row++) {
+			for (int col = 0; col < gridColumns; col++) {
+				opponent_bg[row][col] = opponent_bg[row + 1][col];
+			}
+		}
+
+		// 맨 아래 줄은 null로 채워준다.
+		for (int col = 0; col < gridColumns; col++) {
+			opponent_bg[gridRows - 1][col] = null;
+		}
+	}
+
+	// 공격할 줄에서 채워진 부분만 gray로 상대의 배경에 채워넣는다.
+	public void attack() {
+		for (int col = 0; col < gridColumns; col++) {
+			if (attackLine[col] != null) {
+				opponent_bg[gridRows - 1][col] = Color.gray;
+			}
+		}
+	}
+
+	// 상대의 배경을 인자로 받아서 변수로 저장한다.
+	public void setOpponent_bg(Color[][] oppbg) {
+		this.opponent_bg = oppbg;
+	}
+
+	// 블럭을 배경으로 옮기기 전의 배경상태를 저장해 두기 위해 사용한다.
+	public void saveBackground() {
+		int r = gridRows;
+		int c = gridColumns;
+		Color[][] cur_background = getBackgroundArray();
+
+		pre_background = new Color[r][c];
+
+		for (int row = 0; row < r; row++) {
+			for (int col = 0; col < c; col++) {
+				pre_background[row][col] = cur_background[row][col];
+			}
+		}
 	}
 
 	private void twinkleCL(int r) {
@@ -603,6 +721,14 @@ public class GameArea extends JPanel {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void updateGameArea(int r) {
+		clearLine(r);
+		shiftDown(r);
+		clearLine(0); // 첫번째 행이 null이 되므로 따로 지워주기
+
+		repaint();
 	}
 
 	// 배경에서 r행을 지운다.

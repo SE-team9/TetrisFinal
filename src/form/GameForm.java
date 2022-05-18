@@ -151,7 +151,7 @@ public class GameForm extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (!isPaused) {
 					ga.dropBlock();
-					gt.scorePlus10();
+					gt.scorePlus15();
 				}
 			}
 		});
@@ -210,6 +210,15 @@ public class GameForm extends JFrame {
 		lblLevel.setText("Level: " + level);
 	}
 	
+	public void updateScore(int score, int userId) {
+		
+	}
+
+	public void updateLevel(int level, int userId) {
+		
+	}
+
+	
 	// GameForm 프레임 실행
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -218,5 +227,4 @@ public class GameForm extends JFrame {
 			}
 		});
 	}
-
 }

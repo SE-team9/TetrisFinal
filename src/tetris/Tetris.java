@@ -12,11 +12,13 @@ import form.StartupForm;
 
 public class Tetris {
 	private static int w, h;
+	private static int size;
 	private static StartupForm sf;
 	private static GameForm gf;
 	private static OptionForm of;
 	private static LeaderboardForm lf;
 	
+	// 새로 화면을 띄울 때마다 파일에 저장된 값을 참조하여 프레임 크기 조정 
 	private static void updateFrameSize() {
 		try {
 			File file = new File("settings.txt");
@@ -26,13 +28,13 @@ public class Tetris {
 			};
 			
 			FileInputStream fis = new FileInputStream(file);
-			int data = fis.read();
+			size = fis.read();
 			
 			// 파일에 저장된 값에 따라 크기 조절 
-			if(data == 0) {
+			if(size == 0) {
 				w = 600;
 				h = 450;
-			}else if(data == 1) {
+			}else if(size == 1) {
 				w = 700;
 				h = 550;
 			}else {
@@ -45,6 +47,10 @@ public class Tetris {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static int getFrameSize() {
+		return size;
 	}
 	
 	// 시작 화면 띄우기 
@@ -69,7 +75,7 @@ public class Tetris {
 		
 		gf.startGame(); // 게임 스레드 시작 
 	}
-	
+
 	// 설정 화면 띄우기 
 	public static void showOption() {
 		updateFrameSize();
@@ -138,12 +144,11 @@ public class Tetris {
 	public static void main(String[] args) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				
-				// 파일에서 불러온 값에 따라 모든 프레임의 크기 조절 
+				// 파일에 저장된 설정 값에 따라 w, h 초기화  
 				updateFrameSize();
 				
 				sf = new StartupForm(w, h);
-				of = new OptionForm(w, h); 
+				of = new OptionForm(w, h);
 				gf = new GameForm(w, h);
 				lf = new LeaderboardForm(w, h);
 				
