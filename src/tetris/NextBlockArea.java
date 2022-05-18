@@ -2,29 +2,34 @@ package tetris;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.File;
+import java.io.FileInputStream;
 
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class NextBlockArea extends JPanel {
-	private static int gfW = 600, gfH = 460;
-	private GameArea ga;
+	private int width; // NextBlockAreaì˜ í¬ê¸° 
 	private TetrisBlock nextBlock;
 	private int gridCellSize;
-	private boolean isItem = false;  // ¾ÆÀÌÅÛ ºí·°ÀÎÁö È®ÀÎÇÏ´Â º¯¼ö
+	private boolean curIsItem = false; // ì•„ì´í…œ ë¸”ëŸ­ì¸ì§€ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
 
 	public NextBlockArea(int w, int h, GameArea ga) {
-		this.gfW = w;
-		this.gfH = h;
+		initThisPanel(w, h);
 		
-		initThisPanel();
-
-		this.ga = ga;
 		nextBlock = ga.getNextBlock();
 		gridCellSize = ga.getGridCellSize();
 	}
 	
-	// ´ëÀü¸ğµå
+	// ëŒ€ì „ ëª¨ë“œ
+	public NextBlockArea(int w, int h, GameArea ga, int xGap) {
+		initThisPanel(w, h, xGap);
+		
+		nextBlock = ga.getNextBlock();
+		gridCellSize = ga.getGridCellSize();
+	}
+	
+	// ëŒ€ì „ëª¨ë“œ
 	public NextBlockArea(int w, int h, GameArea ga, int locate) {
 		this.gfW = w;
 		this.gfH = h;
@@ -36,21 +41,33 @@ public class NextBlockArea extends JPanel {
 		gridCellSize = ga.getGridCellSize();
 	}
 
-	private void initThisPanel() {
-		this.setBounds(gfW / 15, gfH / 60, gfW / 5, gfW / 5);
+	private void initThisPanel(int w, int h) {
+		updatePanelSize(); // width ì´ˆê¸°í™” 
+		this.setBounds(w / 60, h / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}
 	
-	// ¿À¸¥ÂÊ ÇÃ·¹ÀÌ¾îÀÇ ´ÙÀ½ ºí·° Ç¥½Ã ºÎºĞÀº locate¸¸Å­ ¿À¸¥ÂÊÀ¸·Î ÀÌµ¿ ½ÃÅ²´Ù.
-	private void initThisPanel(int locate) {
-		this.setBounds(gfW / 15 + locate, gfH / 60, gfW / 5, gfW / 5);
+	// ëŒ€ì „ ëª¨ë“œ 
+	private void initThisPanel(int w, int h, int xGap) {
+		this.setBounds(w / 15 + xGap, h / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	private void updatePanelSize() {
+		int data = Tetris.getFrameSize();
+		if(data == 0) {
+			this.width = 120;
+		}else if(data == 1) {
+			this.width = 140;
+		}else {
+			this.width = 160;
+		}
 	}
 	
 	public void initNextBlockArea() {
-		this.isItem = false;
+		this.curIsItem = false;
 	}
 
 	public void updateNBA(TetrisBlock nextblock) {
@@ -59,7 +76,7 @@ public class NextBlockArea extends JPanel {
 	}
 	
 	public void setIsItem(boolean answer) {
-		isItem = answer;
+		curIsItem = answer;
 	}
 
 	private void drawBlock(Graphics g) {
@@ -78,7 +95,7 @@ public class NextBlockArea extends JPanel {
 					int x = centerX + col * gridCellSize;
 					int y = centerY + row * gridCellSize;
 
-					if (isItem) {
+					if (curIsItem) {
 						drawGridOval(g, c, x, y);
 					} else {	
 						drawGridSquare(g, c, x, y);
@@ -109,6 +126,6 @@ public class NextBlockArea extends JPanel {
 	}
 	
 	public boolean getIsItem() {
-		return this.isItem;
+		return this.curIsItem;
 	}
 }

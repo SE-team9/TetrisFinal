@@ -76,9 +76,8 @@ public class LeaderboardForm extends JFrame {
 		
 		// 텍스트를 일반모드로 초기화 
 		lblGameMode = new JLabel(gameMode[0]);
-
-		lblGameMode.setHorizontalAlignment(JLabel.CENTER);
 		lblGameMode.setBounds(w / 3, h / 30, 200, 30);
+		lblGameMode.setHorizontalAlignment(JLabel.CENTER);
 		this.add(lblGameMode);
 
 		lblArrow[0].setBounds(w / 3 + 10, h / 30, 30, 30);

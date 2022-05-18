@@ -1,4 +1,7 @@
 package form;
+import tetris.*;
+
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -9,40 +12,28 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
-import tetris.AttackLineArea;
-import tetris.GameArea;
-import tetris.GameThread;
-import tetris.NextBlockArea;
-import tetris.Tetris;
-
 public class GameForm extends JFrame {
 	private int w, h;
-	
-	private GameArea ga;
-	private GameThread gt;
-	private NextBlockArea nba;
-	private JLabel lblScore, lblLevel;
-	private JTextArea keyManual;
-	private boolean isPaused = false;
-	
-	// ------------------------------ 대전모드용 변수들
-	private GameArea ga2;
-	private GameThread gt2;
-	private NextBlockArea nba2;
-	private JLabel lblScore2, lblLevel2;
-	private JTextArea keyManual2;
-	private AttackLineArea ala;
-	private AttackLineArea ala2;
+	private GameArea ga, ga2;
+	private GameThread gt, gt2;
+	private NextBlockArea nba, nba2;
+	private AttackLineArea ala, ala2;
+	private JTextArea keyManual, keyManual2;
+	private JLabel lblScore, lblScore2; 
+	private JLabel lblLevel, lblLevel2;
 	private JLabel lblTime;
+	private boolean isPaused = false;
 
-	public GameForm(int w, int h) { // 객체 생성 시 크기 설정 
+	// 객체 생성 시 크기 설정 
+	public GameForm(int w, int h) {
 		this.w = w;
 		this.h = h;
 		initComponents(w, h);
 		initControls(0); // 조작 키 설정 
 	}
-
-	public void initComponents(int w, int h) { // 화면 띄울 때 크기 설정 
+	
+	// 화면 띄울 때 크기 설정 
+	public void initComponents(int w, int h) {
 		this.w = w;
 		this.h = h;
 		
@@ -79,7 +70,6 @@ public class GameForm extends JFrame {
 		this.add(ala);
 		this.add(ala2);
 	}
-	
 
 	private void initThisFrame() {
 		this.setSize(w, h);
@@ -90,7 +80,7 @@ public class GameForm extends JFrame {
 		this.setVisible(false);
 	}
 	
-	// 대전모드
+	// 대전 모드
 	private void initThisFrame_pvp() {
 		this.setSize(w * 2, h); // 대전모드는 가로 길이 2배
 		this.setResizable(false);
@@ -109,7 +99,7 @@ public class GameForm extends JFrame {
 		this.add(lblLevel);
 	}
 	
-	// 대전모드
+	// 대전 모드
 	private void initDisplay_pvp() {
 		// 왼쪽 플레이어 점수, 레벨
 		lblScore = new JLabel("Score: 0");
@@ -201,7 +191,6 @@ public class GameForm extends JFrame {
 			}
 		});
 
-		// TODO: 키 입력에 의해 한칸 내려갈 때도 점수가 1점 증가하도록 
 		am.put("downOneLine", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -211,7 +200,6 @@ public class GameForm extends JFrame {
 			}
 		});
 
-		// TODO: 키 입력에 의해 한번에 떨어지면 15점 증가하도록 
 		am.put("downToEnd", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -256,13 +244,12 @@ public class GameForm extends JFrame {
 			}
 		});
 	}
-
+	
 	// 대전모드 키 바인딩
 	public void initControls_pvp() {
 		InputMap im = this.getRootPane().getInputMap();
 		ActionMap am = this.getRootPane().getActionMap();
-
-		im.clear();
+		im.clear(); // 이전에 키 바인딩 되었던 거 초기화 
 
 		im.put(KeyStroke.getKeyStroke("D"), "right_1");
 		im.put(KeyStroke.getKeyStroke("A"), "left_1");
@@ -336,6 +323,7 @@ public class GameForm extends JFrame {
 					ga2.moveBlockLeft();
 			}
 		});
+		
 		am.put("up_1", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -350,7 +338,7 @@ public class GameForm extends JFrame {
 					ga2.rotateBlock();
 			}
 		});
-		// TODO: 키 입력에 의해 한칸 내려갈 때도 점수가 1점 증가하도록
+		
 		am.put("downOneLine_1", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -361,7 +349,6 @@ public class GameForm extends JFrame {
 				}
 			}
 		});
-		// TODO: 키 입력에 의해 한칸 내려갈 때도 점수가 1점 증가하도록
 		am.put("downOneLine_2", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -372,6 +359,7 @@ public class GameForm extends JFrame {
 				}
 			}
 		});
+		
 		am.put("downToEnd_1", new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -428,7 +416,7 @@ public class GameForm extends JFrame {
 			}
 		});
 	}
-	
+
 	// 게임 스레드 시작
 	public void startGame() {
 		// 게임이 다시 시작될 때마다 초기화 되어야 하는 것들을 초기화한다. 
@@ -440,41 +428,30 @@ public class GameForm extends JFrame {
 		gt.start();
 	}
 	
-	// 대전모드 게임 스레드 시작
 	public void startGame_pvp() {
 		// 게임이 다시 시작될 때마다 초기화 되어야 하는 것들을 초기화한다.
 		ga.initGameArea_pvp();
 		ga2.initGameArea_pvp();
-		
+
 		nba.initNextBlockArea();
 		nba2.initNextBlockArea();
 
 		// 상대의 배경 정보를 확인해야 하므로, 인수로 전달해서 변수에 할당 해준다.
 		ga.setOpponent_bg(ga2.getBackgroundArray());
 		ga2.setOpponent_bg(ga.getBackgroundArray());
-		
+
 		// 자신의 배경 정보를 확인해야 하므로, 인수로 전달해서 변수에 할당 해준다.
 		ala.set_bg(ga.getBackgroundArray());
 		ala2.set_bg(ga2.getBackgroundArray());
-		
-		gt = new GameThread(ga, this, nba, ala, 1);
-		gt2 = new GameThread(ga2, this, nba2, ala2, 2);
-		
+
+		gt = new GameThread(this, ga, nba, ala, 1);
+		gt2 = new GameThread(this, ga2, nba2, ala2, 2);
+
 		gt.start();
 		gt2.start();
 	}
 
-	public void updateScore(int score) {
-		lblScore.setText("Score: " + score);
-	}
-
-	public void updateLevel(int level) {
-		lblLevel.setText("Level: " + level);
-	}
-	
-	// --------------------------------------------------- 대전모드를 위한 함수
-	
-	// 타임어택모드 시간표시, 어차피 시간은 공유되므로 플레이어1일 때만 해당 함수가 호출된다.
+	// 타임어택 모드 시간 표시, 어차피 시간은 공유되므로 플레이어1일 때만 해당 함수가 호출된다.
 	public void displayTime(int userNum) {
 		if(userNum == 1) {
 			lblTime = new JLabel("Time: 100");
@@ -482,15 +459,21 @@ public class GameForm extends JFrame {
 			this.add(lblTime);
 		}
 	}
-	
-	// 시간 업데이트 
-	// 어차피 남은 시간은 공유되므로, 플레이어1일 때만 시간을 업데이트 한다.
+
+	// 시간 업데이트
 	public void updateTime(int time, int userNum) {
 		if(userNum == 1) {
 			lblTime.setText("Time: " + time);
 		}
 	}
 	
+	public void updateScore(int score) {
+		lblScore.setText("Score: " + score);
+	}
+	public void updateLevel(int level) {
+		lblLevel.setText("Level: " + level);
+	}
+
 	// userNum에 따라 해당하는 플레이어의 점수 업데이트
 	public void updateScore(int score, int userNum) {
 		if (userNum == 1) {
@@ -528,14 +511,13 @@ public class GameForm extends JFrame {
 			ala.updateAttackLines();
 		}
 	}
-	
+
 	// GameForm 프레임 실행
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 			}
 		});
 	}
-
 }

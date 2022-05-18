@@ -13,11 +13,13 @@ import form.StartupForm;
 
 public class Tetris {
 	private static int w, h;
+	private static int size;
 	private static StartupForm sf;
 	private static GameForm gf;
 	private static OptionForm of;
 	private static LeaderboardForm lf;
 	
+	// ìƒˆë¡œ í™”ë©´ì„ ë„ìš¸ ë•Œë§ˆë‹¤ íŒŒì¼ì— ì €ì¥ëœ ê°’ì„ ì°¸ì¡°í•˜ì—¬ í”„ë ˆì„ í¬ê¸° ì¡°ì • 
 	private static void updateFrameSize() {
 		try {
 			File file = new File("settings.txt");
@@ -27,10 +29,10 @@ public class Tetris {
 			};
 			
 			FileInputStream fis = new FileInputStream(file);
-			int data = fis.read();
+			size = fis.read();
 			
-			// ÆÄÀÏ¿¡ ÀúÀåµÈ °ª¿¡ µû¶ó Å©±â Á¶Àı 
-			if(data == 0) {
+			// íŒŒì¼ì— ì €ì¥ëœ ê°’ì— ë”°ë¼ í¬ê¸° ì¡°ì ˆ 
+			if(size == 0) {
 				w = 600;
 				h = 460;
 			}else if(data == 1) {
@@ -48,94 +50,100 @@ public class Tetris {
 		}
 	}
 	
-	// ½ÃÀÛ È­¸é ¶ç¿ì±â 
+	public static int getFrameSize() {
+		return size;
+	}
+	
+	// ì‹œì‘ í™”ë©´ ë„ìš°ê¸° 
 	public static void showStartup() {
-		updateFrameSize(); // ¸â¹ö º¯¼ö ¾÷µ¥ÀÌÆ® 
+		updateFrameSize(); // ë©¤ë²„ ë³€ìˆ˜ ì—…ë°ì´íŠ¸ 
 		
 		sf.getContentPane().removeAll();
-		sf.initComponents(w, h); // ¸â¹ö º¯¼ö °ª¿¡ µû¶ó ÄÄÆ÷³ÍÆ® À§Ä¡ Á¶Á¤ 
+		sf.initComponents(w, h); // ë©¤ë²„ ë³€ìˆ˜ ê°’ì— ë”°ë¼ ì»´í¬ë„ŒíŠ¸ ìœ„ì¹˜ ì¡°ì • 
 		sf.setVisible(true);
 		sf.getContentPane().repaint();
 	}
 	
-	// °ÔÀÓ È­¸é ¶ç¿ì¸é¼­ ½º·¹µå ½ÃÀÛ 
+	// ê²Œì„ í™”ë©´ ë„ìš°ë©´ì„œ ìŠ¤ë ˆë“œ ì‹œì‘ 
 	public static void start() {
 		updateFrameSize();
-		
 		gf.getContentPane().removeAll();
+    
 		gf.initComponents(w, h);
-		gf.initControls(of.getCurrentKeyMode()); // Á¶ÀÛ Å° ¼³Á¤
+		gf.initControls(of.getCurrentKeyMode()); // ì¡°ì‘ í‚¤ ì„¤ì •
+    
 		gf.setVisible(true);
 		gf.getContentPane().repaint();
-		
-		gf.startGame(); // °ÔÀÓ ½º·¹µå ½ÃÀÛ 
-	}
 	
-	// ´ëÀü¸ğµå
+		gf.startGame(); // ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘ 
+	}
+
+  // ëŒ€ì „ëª¨ë“œ
 	public static void start_pvp() {
 		updateFrameSize();
-		
 		gf.getContentPane().removeAll();
+   
 		gf.initComponents_pvp(w, h); 	
 		gf.initControls_pvp();   		
+    
 		gf.setVisible(true); 		
 		gf.getContentPane().repaint();
 
-		gf.startGame_pvp(); // °ÔÀÓ ½º·¹µå ½ÃÀÛ
+		gf.startGame_pvp(); // ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘
 	}
-	
-	// ¼³Á¤ È­¸é ¶ç¿ì±â 
+  
+	// ì„¤ì • í™”ë©´ ë„ìš°ê¸° 
 	public static void showOption() {
 		updateFrameSize();
 		
 		of.getContentPane().removeAll();
-		of.initComponents(w, h); // È®Á¤µÈ Ä®·³ °ªÀ¸·Î º¸¿©ÁÖ±â
+		of.initComponents(w, h); // í™•ì •ëœ ì¹¼ëŸ¼ ê°’ìœ¼ë¡œ ë³´ì—¬ì£¼ê¸°
 		of.setVisible(true);
 		of.getContentPane().repaint();
 	}
 	
-	// ½ºÄÚ¾îº¸µå ¶ç¿ì±â  
+	// ìŠ¤ì½”ì–´ë³´ë“œ ë„ìš°ê¸°  
 	public static void showLeaderboard() {
 		updateFrameSize();
 		
 		lf.getContentPane().removeAll();
 		lf.initComponents(w, h);
-		lf.updateTableWithMode(0); // ÀÏ¹İ ¸ğµå ¸ÕÀú º¸¿©ÁÖ±â 
+		lf.updateTableWithMode(0); // ì¼ë°˜ ëª¨ë“œ ë¨¼ì € ë³´ì—¬ì£¼ê¸° 
 		lf.setVisible(true);
 		lf.getContentPane().repaint();
 	}
 	
-	// °ÔÀÓ ¸ğµå
+	// ê²Œì„ ëª¨ë“œ
 	public static int getGameMode() {
 		if(sf == null) return 0;
 		return sf.getCurrentGameMode();
 	}
 	
-	// Á¶ÀÛ Å° 
+	// ì¡°ì‘ í‚¤ 
 	public static int getKeyMode() {
 		if(of == null) return 0;
 		return of.getCurrentKeyMode();
 	}
 	
-	// °ÔÀÓ ³­ÀÌµµ
+	// ê²Œì„ ë‚œì´ë„
 	public static int getGameLevel() {
 		if(of == null) return 0;
 		return of.getCurrentGameLevel();
 	}
 	
-	// »ö»ó ¸ğµå
+	// ìƒ‰ìƒ ëª¨ë“œ
 	public static int getColorMode() {
 		if (of == null) return 0;
 		return of.getCurrentColorMode();
 	}
 
-	// °ÔÀÓ Á¾·á (ÇöÀç ¸ğµå, ÀÌ¸§, Á¡¼ö, ³­ÀÌµµ)
+	// ê²Œì„ ì¢…ë£Œ (í˜„ì¬ ëª¨ë“œ, ì´ë¦„, ì ìˆ˜, ë‚œì´ë„)
 	public static void gameOver(int mode, int score, int levelMode) {
-		// À¯Àú ÀÌ¸§ ÀÔ·Â ¹Ş±â
+		// ìœ ì € ì´ë¦„ ì…ë ¥ ë°›ê¸°
 		String name = JOptionPane.showInputDialog("Game Over!\n Please enter your name.");
 		gf.setVisible(false);
 		
-		// Å×ÀÌºí¿¡ µ¥ÀÌÅÍ Ãß°¡
+		// í…Œì´ë¸”ì— ë°ì´í„° ì¶”ê°€
 		switch(levelMode) {
 		case 0:
 			lf.addPlayer(mode, name, score, "Easy");
@@ -152,12 +160,11 @@ public class Tetris {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				
-				// ÆÄÀÏ¿¡¼­ ºÒ·¯¿Â °ª¿¡ µû¶ó ¸ğµç ÇÁ·¹ÀÓÀÇ Å©±â Á¶Àı 
+				// íŒŒì¼ì— ì €ì¥ëœ ì„¤ì • ê°’ì— ë”°ë¼ w, h ì´ˆê¸°í™”  
 				updateFrameSize();
 				
 				sf = new StartupForm(w, h);
-				of = new OptionForm(w, h); 
+				of = new OptionForm(w, h);
 				gf = new GameForm(w, h);
 				lf = new LeaderboardForm(w, h);
 				

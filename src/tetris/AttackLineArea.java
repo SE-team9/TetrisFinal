@@ -7,24 +7,31 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class AttackLineArea extends JPanel{
-	private static int gfW = 600, gfH = 460;
+	private int width;
 	private Color[][] bg;
-
 	private int gridCellSize;
 
-	public AttackLineArea(int w, int h, int locate) {
-		this.gfW = w;
-		this.gfH = h;
-
-		initThisPanel(locate);
-
-		gridCellSize = gfW / 50;
+	public AttackLineArea(int w, int h, int xGap) {
+		initThisPanel(w, h, xGap);
+		gridCellSize = w / 50;
 	}
-
-	private void initThisPanel(int locate) {
-		this.setBounds(gfW * 11 / 15  +locate, gfH / 60, gfW / 50 * 10, gfW / 50 * 10);
+	
+	private void initThisPanel(int gfW, int gfH, int xGap) {
+		updatePanelSize();
+		this.setBounds(gfW * 11 / 15 + xGap, gfH / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
+	}
+	
+	private void updatePanelSize() {
+		int data = Tetris.getFrameSize();
+		if(data == 0) {
+			this.width = 120;
+		}else if(data == 1) {
+			this.width = 140;
+		}else {
+			this.width = 160;
+		}
 	}
 
 	public void updateAttackLines() {
@@ -35,9 +42,7 @@ public class AttackLineArea extends JPanel{
 		this.bg = bg;
 	}
 
-	// 배경을 그려준다.
 	private void drawBackground(Graphics g) {
-
 		for (int r = 19; r > 9; r--) {
 			for (int c = 0; c < 10; c++) {
 				if (bg[r][c] == Color.gray) {
