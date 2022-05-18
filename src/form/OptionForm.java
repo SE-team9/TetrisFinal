@@ -2,6 +2,7 @@ package form;
 import tetris.*;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -72,11 +73,11 @@ public class OptionForm extends JFrame {
 		
 		// 프레임 크기 조절 
 		if(confirmedColumn[0] == 0) {
-			updateFrameSize(600, 450);
+			updateFrameSize(600, 460);
 		}else if(confirmedColumn[0] == 1) {
-			updateFrameSize(700, 550);
+			updateFrameSize(720, 540);
 		}else {
-			updateFrameSize(800, 650);
+			updateFrameSize(840, 620);
 		}
 		
 		initControls();
@@ -332,7 +333,7 @@ public class OptionForm extends JFrame {
 	
 	// OptionForm 프레임 실행
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 			}

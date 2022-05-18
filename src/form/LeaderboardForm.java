@@ -5,6 +5,7 @@ import tetris.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.EOFException;
@@ -310,7 +311,7 @@ public class LeaderboardForm extends JFrame {
 
 	// LeaderboardForm 프레임 실행
 	public static void main(String[] args) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
+		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
 			}

@@ -9,10 +9,10 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class NextBlockArea extends JPanel {
-	private int width; // NextBlockAreaÀÇ Å©±â 
+	private int width; // NextBlockAreaì˜ í¬ê¸° 
 	private TetrisBlock nextBlock;
 	private int gridCellSize;
-	private boolean curIsItem = false; // ¾ÆÀÌÅÛ ºí·°ÀÎÁö È®ÀÎÇÏ´Â º¯¼ö
+	private boolean curIsItem = false; // ì•„ì´í…œ ë¸”ëŸ­ì¸ì§€ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
 
 	public NextBlockArea(int w, int h, GameArea ga) {
 		initThisPanel(w, h);
@@ -21,22 +21,34 @@ public class NextBlockArea extends JPanel {
 		gridCellSize = ga.getGridCellSize();
 	}
 	
-	// ´ëÀü ¸ğµå
+	// ëŒ€ì „ ëª¨ë“œ
 	public NextBlockArea(int w, int h, GameArea ga, int xGap) {
 		initThisPanel(w, h, xGap);
 		
 		nextBlock = ga.getNextBlock();
 		gridCellSize = ga.getGridCellSize();
 	}
+	
+	// ëŒ€ì „ëª¨ë“œ
+	public NextBlockArea(int w, int h, GameArea ga, int locate) {
+		this.gfW = w;
+		this.gfH = h;
+		
+		initThisPanel(locate);
+
+		this.ga = ga;
+		nextBlock = ga.getNextBlock();
+		gridCellSize = ga.getGridCellSize();
+	}
 
 	private void initThisPanel(int w, int h) {
-		updatePanelSize(); // width ÃÊ±âÈ­ 
+		updatePanelSize(); // width ì´ˆê¸°í™” 
 		this.setBounds(w / 60, h / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}
 	
-	// ´ëÀü ¸ğµå 
+	// ëŒ€ì „ ëª¨ë“œ 
 	private void initThisPanel(int w, int h, int xGap) {
 		this.setBounds(w / 15 + xGap, h / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
