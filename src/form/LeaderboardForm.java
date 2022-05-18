@@ -287,8 +287,6 @@ public class LeaderboardForm extends JFrame {
 		
 		initTableData(); // 2. 모드에 따른 파일 재업로드 
 		
-		
-		
 		// 유저 정보 추가
 		tm.addRow(new Object[] { name, score, level });
 

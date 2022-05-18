@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 import java.io.File;
 import java.io.FileInputStream;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import form.GameForm;
 import form.LeaderboardForm;
@@ -19,7 +18,7 @@ public class Tetris {
 	private static OptionForm of;
 	private static LeaderboardForm lf;
 	
-	// ìƒˆë¡œ í™”ë©´ì„ ë„ìš¸ ë•Œë§ˆë‹¤ íŒŒì¼ì— ì €ì¥ëœ ê°’ì„ ì°¸ì¡°í•˜ì—¬ í”„ë ˆì„ í¬ê¸° ì¡°ì • 
+	// »õ·Î È­¸éÀ» ¶ç¿ï ¶§¸¶´Ù ÆÄÀÏ¿¡ ÀúÀåµÈ °ªÀ» ÂüÁ¶ÇÏ¿© ÇÁ·¹ÀÓ Å©±â Á¶Á¤ 
 	private static void updateFrameSize() {
 		try {
 			File file = new File("settings.txt");
@@ -31,11 +30,11 @@ public class Tetris {
 			FileInputStream fis = new FileInputStream(file);
 			size = fis.read();
 			
-			// íŒŒì¼ì— ì €ì¥ëœ ê°’ì— ë”°ë¼ í¬ê¸° ì¡°ì ˆ 
+			// ÆÄÀÏ¿¡ ÀúÀåµÈ °ª¿¡ µû¶ó Å©±â Á¶Àı 
 			if(size == 0) {
 				w = 600;
 				h = 460;
-			}else if(data == 1) {
+			}else if(size == 1) {
 				w = 720;
 				h = 540;
 			}else {
@@ -54,31 +53,31 @@ public class Tetris {
 		return size;
 	}
 	
-	// ì‹œì‘ í™”ë©´ ë„ìš°ê¸° 
+	// ½ÃÀÛ È­¸é ¶ç¿ì±â 
 	public static void showStartup() {
-		updateFrameSize(); // ë©¤ë²„ ë³€ìˆ˜ ì—…ë°ì´íŠ¸ 
+		updateFrameSize(); // ¸â¹ö º¯¼ö ¾÷µ¥ÀÌÆ® 
 		
 		sf.getContentPane().removeAll();
-		sf.initComponents(w, h); // ë©¤ë²„ ë³€ìˆ˜ ê°’ì— ë”°ë¼ ì»´í¬ë„ŒíŠ¸ ìœ„ì¹˜ ì¡°ì • 
+		sf.initComponents(w, h); // ¸â¹ö º¯¼ö °ª¿¡ µû¶ó ÄÄÆ÷³ÍÆ® À§Ä¡ Á¶Á¤ 
 		sf.setVisible(true);
 		sf.getContentPane().repaint();
 	}
 	
-	// ê²Œì„ í™”ë©´ ë„ìš°ë©´ì„œ ìŠ¤ë ˆë“œ ì‹œì‘ 
+	// °ÔÀÓ È­¸é ¶ç¿ì¸é¼­ ½º·¹µå ½ÃÀÛ 
 	public static void start() {
 		updateFrameSize();
 		gf.getContentPane().removeAll();
     
 		gf.initComponents(w, h);
-		gf.initControls(of.getCurrentKeyMode()); // ì¡°ì‘ í‚¤ ì„¤ì •
+		gf.initControls(of.getCurrentKeyMode()); // Á¶ÀÛ Å° ¼³Á¤
     
 		gf.setVisible(true);
 		gf.getContentPane().repaint();
 	
-		gf.startGame(); // ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘ 
+		gf.startGame(); // °ÔÀÓ ½º·¹µå ½ÃÀÛ 
 	}
 
-  // ëŒ€ì „ëª¨ë“œ
+  // ´ëÀü¸ğµå
 	public static void start_pvp() {
 		updateFrameSize();
 		gf.getContentPane().removeAll();
@@ -89,61 +88,61 @@ public class Tetris {
 		gf.setVisible(true); 		
 		gf.getContentPane().repaint();
 
-		gf.startGame_pvp(); // ê²Œì„ ìŠ¤ë ˆë“œ ì‹œì‘
+		gf.startGame_pvp(); // °ÔÀÓ ½º·¹µå ½ÃÀÛ
 	}
   
-	// ì„¤ì • í™”ë©´ ë„ìš°ê¸° 
+	// ¼³Á¤ È­¸é ¶ç¿ì±â 
 	public static void showOption() {
 		updateFrameSize();
 		
 		of.getContentPane().removeAll();
-		of.initComponents(w, h); // í™•ì •ëœ ì¹¼ëŸ¼ ê°’ìœ¼ë¡œ ë³´ì—¬ì£¼ê¸°
+		of.initComponents(w, h); // È®Á¤µÈ Ä®·³ °ªÀ¸·Î º¸¿©ÁÖ±â
 		of.setVisible(true);
 		of.getContentPane().repaint();
 	}
 	
-	// ìŠ¤ì½”ì–´ë³´ë“œ ë„ìš°ê¸°  
+	// ½ºÄÚ¾îº¸µå ¶ç¿ì±â  
 	public static void showLeaderboard() {
 		updateFrameSize();
 		
 		lf.getContentPane().removeAll();
 		lf.initComponents(w, h);
-		lf.updateTableWithMode(0); // ì¼ë°˜ ëª¨ë“œ ë¨¼ì € ë³´ì—¬ì£¼ê¸° 
+		lf.updateTableWithMode(0); // ÀÏ¹İ ¸ğµå ¸ÕÀú º¸¿©ÁÖ±â 
 		lf.setVisible(true);
 		lf.getContentPane().repaint();
 	}
 	
-	// ê²Œì„ ëª¨ë“œ
+	// °ÔÀÓ ¸ğµå
 	public static int getGameMode() {
 		if(sf == null) return 0;
 		return sf.getCurrentGameMode();
 	}
 	
-	// ì¡°ì‘ í‚¤ 
+	// Á¶ÀÛ Å° 
 	public static int getKeyMode() {
 		if(of == null) return 0;
 		return of.getCurrentKeyMode();
 	}
 	
-	// ê²Œì„ ë‚œì´ë„
+	// °ÔÀÓ ³­ÀÌµµ
 	public static int getGameLevel() {
 		if(of == null) return 0;
 		return of.getCurrentGameLevel();
 	}
 	
-	// ìƒ‰ìƒ ëª¨ë“œ
+	// »ö»ó ¸ğµå
 	public static int getColorMode() {
 		if (of == null) return 0;
 		return of.getCurrentColorMode();
 	}
 
-	// ê²Œì„ ì¢…ë£Œ (í˜„ì¬ ëª¨ë“œ, ì´ë¦„, ì ìˆ˜, ë‚œì´ë„)
+	// °ÔÀÓ Á¾·á (ÇöÀç ¸ğµå, ÀÌ¸§, Á¡¼ö, ³­ÀÌµµ)
 	public static void gameOver(int mode, int score, int levelMode) {
-		// ìœ ì € ì´ë¦„ ì…ë ¥ ë°›ê¸°
+		// À¯Àú ÀÌ¸§ ÀÔ·Â ¹Ş±â
 		String name = JOptionPane.showInputDialog("Game Over!\n Please enter your name.");
 		gf.setVisible(false);
 		
-		// í…Œì´ë¸”ì— ë°ì´í„° ì¶”ê°€
+		// Å×ÀÌºí¿¡ µ¥ÀÌÅÍ Ãß°¡
 		switch(levelMode) {
 		case 0:
 			lf.addPlayer(mode, name, score, "Easy");
@@ -160,7 +159,7 @@ public class Tetris {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				// íŒŒì¼ì— ì €ì¥ëœ ì„¤ì • ê°’ì— ë”°ë¼ w, h ì´ˆê¸°í™”  
+				// ÆÄÀÏ¿¡ ÀúÀåµÈ ¼³Á¤ °ª¿¡ µû¶ó w, h ÃÊ±âÈ­  
 				updateFrameSize();
 				
 				sf = new StartupForm(w, h);
