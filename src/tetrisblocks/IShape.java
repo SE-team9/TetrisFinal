@@ -7,6 +7,7 @@ public class IShape extends TetrisBlock {
 	public IShape() {
 		// 블럭의 형태 결정
 		super(new int[][] { { 1, 1, 1, 1 } });
+		
 		// 블럭의 색 결정
 		setColor(0);
 	}

@@ -200,7 +200,7 @@ public class GameThread extends Thread {
 			ga.execItemFunction();
 
 			// 기본 블럭으로 초기화 
-			ga.setIsItem(false);
+			ga.setItemFlag(false);
 			curIsItem = false;
 		} else { 
 			// 현재 블럭이 기본 블럭인 경우 
@@ -212,7 +212,7 @@ public class GameThread extends Thread {
 				nba.setIsItem(false);
 				
 				curIsItem = true; 
-				ga.setIsItem(true); // 이제 아이템 등장 
+				ga.setItemFlag(true); // 이제 아이템 등장 
 			}
 		}
 	}
