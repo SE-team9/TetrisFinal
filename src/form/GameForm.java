@@ -1,6 +1,4 @@
 package form;
-import tetris.*;
-
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 
@@ -11,6 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+
+import tetris.AttackLineArea;
+import tetris.GameArea;
+import tetris.GameThread;
+import tetris.NextBlockArea;
+import tetris.Tetris;
 
 public class GameForm extends JFrame {
 	private int w, h;
@@ -452,8 +456,8 @@ public class GameForm extends JFrame {
 	}
 
 	// 타임어택 모드 시간 표시, 어차피 시간은 공유되므로 플레이어1일 때만 해당 함수가 호출된다.
-	public void displayTime(int userNum) {
-		if(userNum == 1) {
+	public void displayTime(int userID) {
+		if(userID == 1) {
 			lblTime = new JLabel("Time: 100");
 			lblTime.setBounds(w-w/20, h / 60, 100, 30);
 			this.add(lblTime);
@@ -461,8 +465,8 @@ public class GameForm extends JFrame {
 	}
 
 	// 시간 업데이트
-	public void updateTime(int time, int userNum) {
-		if(userNum == 1) {
+	public void updateTime(int time, int userID) {
+		if(userID == 1) {
 			lblTime.setText("Time: " + time);
 		}
 	}
@@ -475,8 +479,8 @@ public class GameForm extends JFrame {
 	}
 
 	// userNum에 따라 해당하는 플레이어의 점수 업데이트
-	public void updateScore(int score, int userNum) {
-		if (userNum == 1) {
+	public void updateScore(int score, int userID) {
+		if (userID == 1) {
 			lblScore.setText("Score: " + score);
 		} else {
 			lblScore2.setText("Score: " + score);
@@ -484,31 +488,35 @@ public class GameForm extends JFrame {
 	}
 
 	// userNum에 따라 해당하는 플레이어의 레벨 업데이트
-	public void updateLevel(int level, int userNum) {
-		if (userNum == 1) {
+	public void updateLevel(int level, int userID) {
+		if (userID == 1) {
 			lblLevel.setText("Level: " + level);
 		} else {
 			lblLevel2.setText("Level: " + level);
 		}
 	}
 
-	// 게임이 끝난 경우 상대 플레이어의 스레드를 종료시키기 위한 함수
-	public void interrupt_Opp(int userNum) {
-		if (userNum == 1) {
+	// 게임이 끝난 경우 상대 플레이어의 스레드를 퍼즈 후 종료시킨다.
+	public void interrupt_Opp(int userID) {
+		if (userID == 1) {
+			gt2.pause();
 			gt2.interrupt();
 		} else {
+			gt.pause();
 			gt.interrupt();
 		}
 	}
 
-	// 삭제된 줄을 상대에게 넘겨서 공격한 후, 상대의 배경, 공격받은 줄을 다시 그려주기 위한 함수 
-	public void repaint_attackLines(int userNum) {
-		if (userNum == 1) {
-			ga2.repaint();
-			ala2.updateAttackLines();
-		} else {
+	// 상대가 공격한 줄을 가져오고 다시 그려준다.
+	public void getAttackLines(int userID) {
+		if (userID == 1) {
+			ga2.attack();
 			ga.repaint();
-			ala.updateAttackLines();
+			ala.repaint();
+		} else {
+			ga.attack();
+			ga2.repaint();
+			ala2.repaint();
 		}
 	}
 

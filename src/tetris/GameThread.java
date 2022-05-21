@@ -28,7 +28,7 @@ public class GameThread extends Thread {
 	private static final int linePerItem = 2; // 줄 삭제에 따른 아이템 등장
 	
 	// 대전 모드 
-	private int userNum;
+	private int userID;
 	private int time = 100;
 	private AttackLineArea ala;
 
@@ -50,7 +50,7 @@ public class GameThread extends Thread {
 		this.ga = ga;
 		this.nba = nba;
 		this.ala = ala;
-		this.userNum = userNum;
+		this.userID = userNum;
 		
 		gf.updateScore(score, userNum);
 		gf.updateLevel(level, userNum);
@@ -155,7 +155,7 @@ public class GameThread extends Thread {
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown()) {
 				score++;
-				gf.updateScore(score, userNum);
+				gf.updateScore(score, userID);
 
 				try {
 					Thread.sleep(interval);
@@ -174,22 +174,19 @@ public class GameThread extends Thread {
 
 			// --------------------------------------------------------- 게임 종료 확인
 			if (ga.isBlockOutOfBounds()) {
-				JOptionPane.showMessageDialog(null, "Game Over!");
+				// 상대 스레드 퍼즈 + 중지
+				gf.interrupt_Opp(userID);
+				JOptionPane.showMessageDialog(null, (3 - userID) + " Player Win!");
 				gf.setVisible(false);
-				
-				gf.interrupt_Opp(userNum);
 				Tetris.showStartup();
-				
 				break;
 			}
       
-			// --------------------------------------------------------- 배경으로 블럭 이동 / 완성된 줄 삭제 / 상대보드로 삭제된 줄 이동
+			// --------------------------------------------------------- 배경으로 블럭 이동 / 완성된 줄 삭제 / 공격 줄 가져오기
 			ga.saveBackground();
 			ga.moveBlockToBackground();
-			
 			int curCL = ga.clearLines_pvp();
-			gf.repaint();
-			gf.repaint_attackLines(userNum);
+			gf.getAttackLines(userID);
 
 			// --------------------------------------------------------- 줄 삭제에 따른 점수, 레벨, 낙하 속도 업데이트
 			
@@ -214,7 +211,7 @@ public class GameThread extends Thread {
 				
 				// 레벨 갱신
 				level = lvl;
-				gf.updateScore(level, userNum);
+				gf.updateScore(level, userID);
 				
 				// 레벨에 따른 속도 상승 
 				if (interval > 300) {
@@ -298,7 +295,7 @@ public class GameThread extends Thread {
 			// --------------------------------------------------------- 한 칸씩 블럭 내리기
 			while (ga.moveBlockDown()) {
 				score++;
-				gf.updateScore(score, userNum);
+				gf.updateScore(score, userID);
 
 				try {
 					Thread.sleep(interval);
@@ -316,21 +313,11 @@ public class GameThread extends Thread {
 
 			// --------------------------------------------------------- 게임 종료 확인
 			if (ga.isBlockOutOfBounds()) {
-				JOptionPane.showMessageDialog(null, "Game Over!");
+				gf.interrupt_Opp(userID);
+				JOptionPane.showMessageDialog(null, (3 - userID) + " Player Win!");
 				gf.setVisible(false);
-				
-				gf.interrupt_Opp(userNum);
 				Tetris.showStartup();
 				break;
-			}
-			
-			// 경계를 넘으면 게임 종료 
-			if (ga.isBlockOutOfBounds()) {
-				// 현재 유저 정보를 파일에 저장하고 스코어보드 띄우기 
-				Tetris.gameOver(gameMode, score, levelMode);
-				
-				System.out.println("Thread Interrupted...");
-				return; // 게임 스레드 종료 
 			}
 	
 			if (curIsItem) {
@@ -356,10 +343,9 @@ public class GameThread extends Thread {
 				}
 			}
 
-			// --------------------------------------------------------- 완성된 줄 삭제
+			// --------------------------------------------------------- 완성된 줄 삭제, 공격 줄 가져오기
 			int curCL = ga.clearLines_pvp();
-			gf.repaint();
-			gf.repaint_attackLines(userNum);
+			gf.getAttackLines(userID);
 
 			// --------------------------------------------------------- 줄 삭제에 따른 점수, 레벨, 낙하 속도
 			
@@ -384,7 +370,7 @@ public class GameThread extends Thread {
 				
 				// 레벨 갱신
 				level = lvl;
-				gf.updateScore(level, userNum);
+				gf.updateScore(level, userID);
 				
 				// 레벨에 따른 속도 상승 
 				if (interval > 300) {
@@ -403,7 +389,7 @@ public class GameThread extends Thread {
 	
 	// 대전+시간제한
 	private void startTimeAttackMode_pvp() {
-		gf.displayTime(userNum);
+		gf.displayTime(userID);
 		
 		while (true) {
 			// --------------------------------------------------------- 새로운 블럭 생성
@@ -414,10 +400,10 @@ public class GameThread extends Thread {
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown() && time > 0) {
 				score++; // 점수 증가 
-				gf.updateScore(score, userNum);
+				gf.updateScore(score, userID);
 				
 				time--; // 시간 감소 
-				gf.updateTime(time, userNum);
+				gf.updateTime(time, userID);
 
 				try {
 					Thread.sleep(interval);
@@ -435,23 +421,21 @@ public class GameThread extends Thread {
 			}
 
 			// --------------------------------------------------------- 게임 종료 확인
-			if (ga.isBlockOutOfBounds() || (time <= 0 && userNum == 1)) {
-				JOptionPane.showMessageDialog(null, "Game Over!");
+			if (ga.isBlockOutOfBounds() || (time <= 0 && userID == 1)) {
+				gf.interrupt_Opp(userID);
+				JOptionPane.showMessageDialog(null, (3 - userID) + " Player Win!");
 				gf.setVisible(false);
-				
-				gf.interrupt_Opp(userNum);
 				Tetris.showStartup();
 				break;
 			}
 			
-			// --------------------------------------------------------- 배경으로 블럭이동 / 완성된 줄 삭제 / 상대보드로 삭제된 줄 이동
+			// --------------------------------------------------------- 배경으로 블럭이동 / 완성된 줄 삭제 / 공격 줄 가져오기
 			ga.saveBackground();
 			ga.moveBlockToBackground();
 			
 			int curCL = ga.clearLines_pvp();
-			gf.repaint();
-			gf.repaint_attackLines(userNum);
-
+			gf.getAttackLines(userID);
+		
 			// --------------------------------------------------------- 줄 삭제에 따른 점수, 레벨, 낙하 속도 업데이트
 			
 			if (curCL == 1) { // 한 줄 삭제
@@ -475,7 +459,7 @@ public class GameThread extends Thread {
 				
 				// 레벨 갱신
 				level = lvl;
-				gf.updateScore(level, userNum); // 이 부분만 다름. 
+				gf.updateScore(level, userID); // 이 부분만 다름. 
 				
 				// 레벨에 따른 속도 상승 
 				if (interval > 300) {
@@ -595,11 +579,11 @@ public class GameThread extends Thread {
 
 	public void scorePlus1_pvp() {
 		score++;
-		gf.updateScore(score, userNum);
+		gf.updateScore(score, userID);
 	}
 
 	public void scorePlus15_pvp() {
 		score += 15;
-		gf.updateScore(score, userNum);
+		gf.updateScore(score, userID);
 	}
 }

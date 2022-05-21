@@ -34,10 +34,6 @@ public class AttackLineArea extends JPanel{
 		}
 	}
 
-	public void updateAttackLines() {
-		repaint();
-	}
-
 	public void set_bg(Color[][] bg) {
 		this.bg = bg;
 	}
