@@ -25,7 +25,7 @@ public class GameThread extends Thread {
 	private boolean curIsItem = false; 	// 현재 블럭이 아이템인지 확인 
 	
 	private int itemCount = 0; // 아이템이 등장한 횟수 카운팅 
-	private static final int linePerItem = 2; // 줄 삭제에 따른 아이템 등장
+	private static final int linePerItem = 1; // 줄 삭제에 따른 아이템 등장
 	
 	// 대전 모드 
 	private int userID;

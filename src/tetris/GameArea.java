@@ -1,5 +1,7 @@
 package tetris;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -17,9 +19,9 @@ import tetrisblocks.OShape;
 import tetrisblocks.SShape;
 import tetrisblocks.ZShape;
 import tetrisitems.DeleteAroundU;
-import tetrisitems.FillEmpty;
-import tetrisitems.OneLineDelete;
-import tetrisitems.TwoLineDelete;
+import tetrisitems.DeleteAllBlock;
+import tetrisitems.DeleteOneLine;
+import tetrisitems.DeleteTwoLine;
 import tetrisitems.Weight;
 
 /*
@@ -104,8 +106,8 @@ public class GameArea extends JPanel {
 		blocks = new TetrisBlock[] { new IShape(), new JShape(), new LShape(), new OShape(), new ZShape(),
 				new SShape() };
 		
-		items = new TetrisBlock[] { new FillEmpty(), new Weight(), new DeleteAroundU(), new TwoLineDelete(),
-				new OneLineDelete() };
+		items = new TetrisBlock[] { new DeleteOneLine(), new DeleteTwoLine(), new Weight(), new DeleteAroundU(), 
+				new DeleteAllBlock() };
 	}
 	
 	// 게임 스레드 시작할 때마다 상태 업데이트 
@@ -134,17 +136,22 @@ public class GameArea extends JPanel {
 	
 	// 다음 블럭 랜덤으로 
 	public void updateNextBlock() {
+		// 레벨에 따라 i형 블럭의 생성 확률 조절 
 		int level = Tetris.getGameLevel();
-		int r = makeRandom(level);
+		int r = makeRandom(level); 
+		
 		nextBlock = blocks[r];
 		nextBlock.setShape();
 	}
 
 	// 다음 아이템 랜덤으로 
 	public void updateNextItem() {
-		Random r = new Random();
-		nextBlock = items[r.nextInt(items.length)];
-		nextBlock.setShape();
+		//Random r = new Random();
+		//nextBlock = items[r.nextInt(items.length)];
+		
+		nextBlock = items[4]; // 모든 블럭 삭제 
+		
+		nextBlock.setShape(); // 여기서 블럭 방향이 랜덤으로 결정됨. 
 	}
 
 	// 다음 블럭 모양을 참조하여, 현재 새 블럭 생성 
@@ -153,7 +160,6 @@ public class GameArea extends JPanel {
 		block.spawn(gridColumns); // 랜덤한 위치에서 떨어지도록 
 	}
 	
-
 	// --------------------------------------------------------------- 난이도 조절  
 
 	// 가중치 랜덤 함수 생성
@@ -440,89 +446,77 @@ public class GameArea extends JPanel {
 	
 	// 현재 아이템의 기능을 수행한다.
 	public void execItemFunction() {
-		if (this.block instanceof FillEmpty) {
-			fillEmpty();
-		} else if (this.block instanceof TwoLineDelete) {
-			twoLineDelete();
-		} else if (this.block instanceof Weight) {
-			Weight();
-		} else if (this.block instanceof DeleteAroundU) {
-			DeleteAroundU();
-		} else if (this.block instanceof OneLineDelete) {
-			oneLineDelte();
+		if(this.block instanceof DeleteOneLine) {
+			deleteOneLine();
+			
+		}else if(this.block instanceof DeleteTwoLine) {
+			deleteTwoLine(); 
+			
+		}else if(this.block instanceof Weight) {
+			deleteWeight();
+			
+		}else if(this.block instanceof DeleteAroundU) {
+			deleteAroundU();
+			
+		}else if(this.block instanceof DeleteAllBlock) {
+			deleteAllBlock();
 		}
 	}
-	
-	// 빈칸 메꾸는 아이템 
-	public void fillEmpty() {
-		int xPos = block.getX();
-		int emptyNum = 0;
-		int currentR;
-		int nextR;
 
-		for (int r = gridRows - 1; r > 0; r--) {
-			if (background[r][xPos] == null) {
-				emptyNum++;
-				nextR = r - 1;
-				while (nextR >= 0 && background[nextR][xPos] == null) {
-					nextR--;
-				}
-				if (nextR == -1) {
-					return;
-				} else {
-					currentR = r;
-					for (; nextR >= 0; nextR--, currentR--) {
-						background[currentR][xPos] = background[nextR][xPos];
-						repaint();
-					}
-				}
-			}
-		}
-		while (emptyNum > 0) {
-			block.moveDown();
-		}
+	// 한 줄 삭제 아이템 (블럭 회전에 따라 모양 달라짐)
+	public void deleteOneLine() {
+		// 경계 체크는 앞에서 이미 한 상태 
+		int yPos = block.getY();
+		
+		clearLine(yPos); 
+		shiftDown(yPos);
+		clearLine(0);    
+
 		repaint();
 	}
 
-	// 한 줄 삭제 아이템 
-	public void oneLineDelte() {
+	// 두 줄 삭제 아이템 (회전해도 모양 그대로) 
+	public void deleteTwoLine() {
 		int yPos = block.getY();
-
-		clearLine(yPos);
-		shiftDown(yPos);
+		
+		// 두 줄 삭제 
+		for (int i = 0; i < gridColumns; i++) {
+			background[yPos][i] = null;
+			background[yPos + 1][i] = null;
+		}
+		
+		// 두칸씩 내리기 
+		for (int row = yPos; row >= 2; row--) { // 0, 1행은 제외 
+			for (int col = 0; col < gridColumns; col++) {
+				background[row][col] = background[row - 2][col];
+			}
+		}
+		
+		// 제일 위의 2행 삭제 
+		for (int i = 0; i < gridColumns; i++) {
+			background[0][i] = null;
+			background[1][i] = null;
+		}
 		
 		repaint();
 	}
 
-	// 두 줄 삭제 아이템 
-	public void twoLineDelete() {
-		int yPos = block.getY();
-		int time = 0;
-
-		for (int r = yPos + 2; r >= yPos + 1 && time < 2; r--) {
-			clearLine(r);
-			shiftDown(r);
-			r++;
-			time++;
-
-			repaint();
-		}
-	}
-
-	// 무게추 아이템
-	public void Weight() {
+	// 무게추 아이템 (회전해도 모양 그대로) 
+	public void deleteWeight() {
+		// 밑으로 한칸씩 내려가면서 
 		for (int row = block.getBottomEdge(); row < gridRows; row++) {
+			// 블럭의 너비만큼 삭제 
 			for (int col = block.getLeftEdge(); col < block.getRightEdge(); col++) {
 				background[row][col] = null;
 			}
+			
 			block.moveDown();
 			repaint();
 		}
-		moveBlockToBackground();
 	}
 
-	// 좌우아래를 모두 삭제하는 바구니 아이템 
-	public void DeleteAroundU() {
+	// 좌우아래를 모두 삭제하는 바구니 아이템 (회전해도 모양 그대로)
+	public void deleteAroundU() {
 		for (int y = block.getY(); y <= block.getBottomEdge(); y++) {
 			if (y >= gridRows)
 				break;
@@ -534,6 +528,21 @@ public class GameArea extends JPanel {
 				background[y][x] = null;
 			}
 		}
+		
+		repaint();
+	}
+	
+	// 모든 블럭을 삭제하는 아이템 
+	public void deleteAllBlock() {
+		for(int i = 0; i < gridRows; i++) {
+			for (int j = 0; j < gridColumns; j++) {
+				if(background[i][j] != null) {
+					background[i][j] = null;
+				}
+			}
+		}
+		
+		repaint();
 	}
 
 	// ------------------------------------------------------------------ 배경, 줄 삭제  
@@ -628,15 +637,18 @@ public class GameArea extends JPanel {
 			background[r][c] = Color.white;
 			repaint();
 		}
+		
 		try {
 			Thread.sleep(150);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		for (int c = 0; c < gridColumns; c++) {
 			background[r][c] = Color.black;
 			repaint();
 		}
+		
 		try {
 			Thread.sleep(150);
 		} catch (InterruptedException e) {
@@ -645,9 +657,9 @@ public class GameArea extends JPanel {
 	}
 	
 	public void updateGameArea(int r) {
-		clearLine(r);
-		shiftDown(r);
-		clearLine(0); // 첫번째 행이 null이 되므로 따로 지워주기
+		clearLine(r); // r행 삭제 
+		shiftDown(r); // 0행 제외하고 한칸씩 내리기 
+		clearLine(0); // 0행 삭제 
 
 		repaint();
 	}
@@ -661,7 +673,7 @@ public class GameArea extends JPanel {
 
 	// r행 위의 모든 줄을 한칸씩 내려준다.
 	private void shiftDown(int r) {
-		for (int row = r; row > 0; row--) {
+		for (int row = r; row > 0; row--) { // 0행은 제외 
 			for (int col = 0; col < gridColumns; col++) {
 				background[row][col] = background[row - 1][col];
 			}
@@ -768,7 +780,7 @@ public class GameArea extends JPanel {
 					int x = (block.getX() + col) * gridCellSize;
 					int y = (block.getY() + row) * gridCellSize;
 
-					if (this.block instanceof OneLineDelete) {
+					if (this.block instanceof DeleteOneLine) {
 						drawGridL(g, c, x, y);
 					}
 					// 현재 블럭이 아이템이면 원으로, 기본 블럭이면 사각형으로 그린다. 
