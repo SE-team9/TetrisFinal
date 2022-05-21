@@ -728,6 +728,13 @@ public class GameArea extends JPanel {
 
 	// 공격할 줄에서 채워진 부분만 gray로 상대의 배경에 채워넣는다.
 	public void attack() {
+		
+		// 두 줄 이상이 삭제되었을 때만
+		if(attackLinesNum<2) {
+			attackLinesNum = 0;
+			return;
+		}
+		
 		shiftUp_oppBg();
 		
 		for (int row = attackLinesNum; row > 0; row--) {
