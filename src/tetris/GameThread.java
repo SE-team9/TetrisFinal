@@ -193,22 +193,16 @@ public class GameThread extends Thread {
 			if (curCL == 1) { // 한 줄 삭제
 				score += curCL;
 				gf.updateScore(score);
-				System.out.println("score after 1 line clear: " + score);
-
 				totalClearedLine += curCL;
 
 			} else if (curCL >= 2) { // 두 줄 이상 삭제
 				score += (10 * curCL); // 보너스 점수
 				gf.updateScore(score);
-				System.out.println("score after 2 line clear: " + score);
-
 				totalClearedLine += curCL;
 			}
 			
 			int lvl = totalClearedLine / linePerLevel + 1;
 			if (lvl > level) {
-				System.out.println("total CL: " + totalClearedLine);
-				
 				// 레벨 갱신
 				level = lvl;
 				gf.updateScore(level, userID);
@@ -219,7 +213,6 @@ public class GameThread extends Thread {
 
 					score += (10 * level); // 보너스 점수
 					gf.updateScore(score);
-					System.out.println("score after level update: " + score);
 				}
 			}
 		}
@@ -352,22 +345,16 @@ public class GameThread extends Thread {
 			if (curCL == 1) { // 한 줄 삭제
 				score += curCL;
 				gf.updateScore(score);
-				System.out.println("score after 1 line clear: " + score);
-
 				totalClearedLine += curCL;
 
 			} else if (curCL >= 2) { // 두 줄 이상 삭제
 				score += (10 * curCL); // 보너스 점수
 				gf.updateScore(score);
-				System.out.println("score after 2 line clear: " + score);
-
 				totalClearedLine += curCL;
 			}
 			
 			int lvl = totalClearedLine / linePerLevel + 1;
 			if (lvl > level) {
-				System.out.println("total CL: " + totalClearedLine);
-				
 				// 레벨 갱신
 				level = lvl;
 				gf.updateScore(level, userID);
@@ -378,7 +365,6 @@ public class GameThread extends Thread {
 
 					score += (10 * level); // 보너스 점수
 					gf.updateScore(score);
-					System.out.println("score after level update: " + score);
 				}
 			}
 			
@@ -441,22 +427,16 @@ public class GameThread extends Thread {
 			if (curCL == 1) { // 한 줄 삭제
 				score += curCL;
 				gf.updateScore(score);
-				System.out.println("score after 1 line clear: " + score);
-
 				totalClearedLine += curCL;
 
 			} else if (curCL >= 2) { // 두 줄 이상 삭제
 				score += (10 * curCL); // 보너스 점수
 				gf.updateScore(score);
-				System.out.println("score after 2 line clear: " + score);
-
 				totalClearedLine += curCL;
 			}
 			
 			int lvl = totalClearedLine / linePerLevel + 1;
 			if (lvl > level) {
-				System.out.println("total CL: " + totalClearedLine);
-				
 				// 레벨 갱신
 				level = lvl;
 				gf.updateScore(level, userID); // 이 부분만 다름. 
@@ -467,7 +447,6 @@ public class GameThread extends Thread {
 
 					score += (10 * level); // 보너스 점수
 					gf.updateScore(score);
-					System.out.println("score after level update: " + score);
 				}
 			}
 		}
