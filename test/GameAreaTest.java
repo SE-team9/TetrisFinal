@@ -32,19 +32,19 @@ class GameAreaTest {
 		assertNotNull(background);
 	}
 
-	@Test
-	@DisplayName("블럭과 아이템 초기화")
-	void testInitBlocks() {
-		ga.initBlocks();
-		
-		TetrisBlock[] blocks = ga.getBlocks();
-		assertNotNull(blocks);
-		assertEquals(blocks.length, 6);
-		
-		TetrisBlock[] items = ga.getItems();
-		assertNotNull(items);
-		assertEquals(items.length, 5);
-	}
+//	@Test
+//	@DisplayName("블럭과 아이템 초기화")
+//	void testInitBlocks() {
+//		ga.initBlocks();
+//		
+//		TetrisBlock[] blocks = ga.getBlocks();
+//		assertNotNull(blocks);
+//		assertEquals(blocks.length, 6);
+//		
+//		TetrisBlock[] items = ga.getItems();
+//		assertNotNull(items);
+//		assertEquals(items.length, 5);
+//	}
 
 	@Test
 	@Disabled

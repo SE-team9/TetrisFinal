@@ -19,6 +19,13 @@ public class TetrisBlock {
 		initColors();
 		initShapes();
 	}
+	
+	// 
+	public TetrisBlock() {
+		this.shape = shape;
+		initColors();
+		initShapes();
+	}
 
 	private void initColors() {
 		allColors = new Color[2][];
@@ -71,10 +78,11 @@ public class TetrisBlock {
 	
 	public int[][] getShape() { return shape; }
 	
+	// 회전에 따라 달라지는 블럭 모양 초기화 
 	public void setShape() {
 		Random r = new Random();
 		currentRotation = r.nextInt(shapes.length);
-		shape = shapes[currentRotation]; // 회전 방향 랜덤 
+		shape = shapes[currentRotation];  
 	}
 	
 	// ---------------------------------------------------------- 블럭 움직임 제어 

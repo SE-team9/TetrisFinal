@@ -231,7 +231,7 @@ public class GameThread extends Thread {
 			}
 			nba.updateNBA(ga.getNextBlock()); // 다음 블럭 표시
 	
-			// 블럭이 위쪽 경계를 넘지 않으면 계속 낙하 
+			// 현재 블럭이 바닥이나 다른 블럭에 닿으면 false
 			while (ga.moveBlockDown()) { 
 				score++; // 한 단위씩 계속 증가 
 				gf.updateScore(score);
@@ -260,7 +260,7 @@ public class GameThread extends Thread {
 				return; // 게임 스레드 종료 
 			}
 	
-			// 현재 블럭 종류에 따라 다른 동작 수행 
+			// 현재 블럭이 바닥이나 다른 블럭에 닿았을 때, 아이템인지 아닌지에 따라 다른 동작 수행 
 			checkBlockState();
 			
 			checkCL(); // 삭제된 줄 수에 따라 점수 갱신 
@@ -500,26 +500,26 @@ public class GameThread extends Thread {
 	}
 
 	private void checkBlockState() {
+		// 3줄 이상 삭제해서 다음 블럭이 아이템으로 설정된 경우    
+		if (nextIsItem) {
+			nextIsItem = false; // 플래그 업데이트 
+			nba.setIsItem(false);
+			
+			curIsItem = true; 
+			ga.setIsItem(true); // 이제 아이템 등장 
+		}
+		
 		// 현재 블럭이 아이템인 경우 
 		if (curIsItem) {
 			ga.twinkleItem();
 			ga.execItemFunction();
 
-			// 기본 블럭으로 초기화 
 			ga.setIsItem(false);
-			curIsItem = false;
+			curIsItem = false; // 플래그 업데이트 
+			
 		} else { 
 			// 현재 블럭이 기본 블럭인 경우 
 			ga.moveBlockToBackground();
-
-			// 3줄 이상 삭제해서 nextIsItem이 true가 된 경우  
-			if (nextIsItem) {
-				nextIsItem = false;
-				nba.setIsItem(false);
-				
-				curIsItem = true; 
-				ga.setIsItem(true); // 이제 아이템 등장 
-			}
 		}
 	}
 
