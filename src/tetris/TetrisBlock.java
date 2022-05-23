@@ -19,13 +19,6 @@ public class TetrisBlock {
 		initColors();
 		initShapes();
 	}
-	
-	// 
-	public TetrisBlock() {
-		this.shape = shape;
-		initColors();
-		initShapes();
-	}
 
 	private void initColors() {
 		allColors = new Color[2][];

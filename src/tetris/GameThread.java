@@ -100,9 +100,12 @@ public class GameThread extends Thread {
 
 	private void startDefaultMode() {
 		while(true) {
-			ga.spawnBlock(); // 새 블럭 생성 
-			ga.updateNextBlock(); // 난이도에 따라 I형 블럭의 생성 확률 조절 
-			nba.updateNBA(ga.getNextBlock()); // 다음 블럭 표시 
+			// nba 객체 처음 생성될 때 설정된 nextBlock 가져오기 
+			//ga.spawnBlock(nba.getNextBlock());
+			
+			// 다음 블럭 업데이트 
+			nba.updateNextBlock();
+			//ga.setBlockIndex(nba.getBlockIndex());
 			
 			// 블럭이 위쪽 경계를 넘지 않으면 계속 낙하 
 			while (ga.moveBlockDown()) {
@@ -144,14 +147,63 @@ public class GameThread extends Thread {
 		}
 	}
 	
+	
+	// 보너스 점수 획득 기준 
+	// 1. 두 줄 이상 삭제한 경우 -> checkCL
+	// 2. 레벨에 따라 낙하 속도가 상승한 경우 -> checkLevel
+
+	private void checkCL() {
+		int curCL = ga.clearLines();
+		System.out.println("curCL: " + curCL);
+
+		// 삭제된 줄이 없으면 점수 갱신 X
+
+		if (curCL == 1) { // 한 줄 삭제
+			score += curCL;
+			gf.updateScore(score);
+			System.out.println("score after 1 line clear: " + score);
+
+			totalClearedLine += curCL;
+
+		} else if (curCL >= 2) { // 두 줄 이상 삭제
+			score += (10 * curCL); // 보너스 점수
+			gf.updateScore(score);
+			System.out.println("score after 2 line clear: " + score);
+
+			totalClearedLine += curCL;
+		}
+	}
+
+	// 각 레벨마다 linePerLevel 이상 줄 삭제하면 레벨 증가
+	private void checkLevel() {
+		int lvl = totalClearedLine / linePerLevel + 1;
+		if (lvl > level) {
+			System.out.println("total CL: " + totalClearedLine);
+			
+			// 레벨 갱신
+			level = lvl;
+			gf.updateLevel(level);
+			
+			// 레벨에 따른 속도 상승 
+			if (interval > 300) {
+				interval -= speedupPerLevel;
+
+				score += (10 * level); // 보너스 점수
+				gf.updateScore(score);
+				System.out.println("score after level update: " + score);
+			}
+		}
+	}
+	
 	// 대전+일반
 	private void startDefaultMode_pvp() {
 		while (true) {
 			// --------------------------------------------------------- 새로운 블럭 생성
-			ga.spawnBlock();
-			ga.updateNextBlock();
-			nba.updateNBA(ga.getNextBlock());
-
+			// nba 객체 처음 생성될 때 설정된 nextBlock 가져오기 
+			//ga.spawnBlock(nba.getNextBlock());
+			
+			// 다음 블럭 업데이트 
+			nba.updateNextBlock();
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown()) {
 				score++;
@@ -218,20 +270,29 @@ public class GameThread extends Thread {
 		}
 	}
 	
+	// 아이템 모드 
 	private void startItemMode() {
 		while (true) {
-			ga.spawnBlock(); // 새 블럭 생성 
+			// 블럭 모양은 참조할 수 있지만, L문자를 붙이는 건 따로 조절해야 한다. 
+			ga.spawnBlock(nba.getNextBlock());
 			
-			// 다음 블럭의 모양 설정 
+			// 다음 블럭 표시 
 			if (nextIsItem) {
 				nba.setIsItem(true);
-				ga.updateNextItem(); // 아이템으로 
-			} else {
-				ga.updateNextBlock(); // 일반 블럭으로
+				nba.updateNextItem(); // 아이템으로 (블럭 인덱스 업데이트)
+				
+				// 여기서 get, set을 이용할 수밖에 없는 이유는
+				// GameForm에서 nba가 ga보다 먼저 생성되기 때문에, nba의 생성자에 ga를 넘겨줄 수 없기 때문이다.
+				// 그렇다고 원래대로 ga를 먼저 생성하면 지금 로직이 틀어진다. nba에서 생성된 블럭을 ga에서 가져오고 있으니깐. 
+				if(nba.getBlockIndex() == 11) {
+					ga.setRandomIndex(nba.getRandIndex());
+				}
+				
+			}else {
+				nba.updateNextBlock(); // 일반 블럭으로
 			}
-			nba.updateNBA(ga.getNextBlock()); // 다음 블럭 표시
-	
-			// 현재 블럭이 바닥이나 다른 블럭에 닿으면 false
+		
+			//  현재 블럭이 바닥이나 다른 블럭에 닿으면 false
 			while (ga.moveBlockDown()) { 
 				score++; // 한 단위씩 계속 증가 
 				gf.updateScore(score);
@@ -259,15 +320,63 @@ public class GameThread extends Thread {
 				System.out.println("Thread Interrupted...");
 				return; // 게임 스레드 종료 
 			}
-	
-			// 현재 블럭이 바닥이나 다른 블럭에 닿았을 때, 아이템인지 아닌지에 따라 다른 동작 수행 
-			checkBlockState();
 			
-			checkCL(); // 삭제된 줄 수에 따라 점수 갱신 
-			checkLevel(); // 레벨에 따라 점수 및 속도 갱신 
+			// ------------------------------------------ 현재 블럭이 바닥이나 다른 블럭에 닿은 경우 
 			
-			// linePerItem 이상 줄 삭제하면, 다음 블럭을 아이템으로 설정하기  
-			checkItem();
+			// 현재 블럭이 아이템이면, 그에 따른 기능 수행 
+			if(curIsItem) {
+				ga.twinkleItem();
+				ga.execItemFunction();
+
+				// 한줄 삭제 아이템에 대한 점수 부여 
+				if(ga.getOLCflag()) {
+					score += 1;
+					gf.updateScore(score);
+					System.out.println("score after OLC item: " + score);
+					totalClearedLine += 1;
+					
+					ga.setOLCflag(false);
+				}
+
+				ga.setIsItem(false);
+				curIsItem = false; // 플래그 업데이트
+			}
+			else {
+				// 현재 블럭이 기본 블럭이면, 배경으로 전환 
+				ga.moveBlockToBackground();
+				
+				// 현재 블럭이 배경으로 전환된 후에 다음 블럭이 아이템이면 
+				if(nextIsItem) {
+					// 다음 블럭은 다시 기본 블럭으로 표시! 
+					nextIsItem = false;
+					nba.setIsItem(false);
+					
+					// 이제 아이템 블럭 등장! 
+					curIsItem = true;
+					ga.setIsItem(true);
+					
+					// 여기서 한줄 삭제 아이템의 인덱스를 전달해줘야 L문자를 그릴 수 있음.
+					ga.setBlockIndex(nba.getBlockIndex());
+				}
+				
+				// 이 부분은 기본 블럭에 대해서만 적용 
+				checkCL(); // 삭제된 줄 수에 따라 점수 갱신 
+				checkLevel(); // 레벨에 따라 점수 및 속도 갱신
+				
+				// linePerItem 이상 줄 삭제하면 다음 블럭이 아이템으로 설정됨. 
+				updateItemState(); 
+			}
+		}
+	}
+
+	private void updateItemState() {
+		int temp = totalClearedLine / linePerItem;
+		if(temp > itemCount) {
+			itemCount = temp; // 아이템이 등장한 횟수 갱신
+			System.out.println("itemCount: " + itemCount);
+			
+			// 다음 블럭을 아이템으로 설정 
+			nextIsItem = true;
 		}
 	}
 
@@ -275,15 +384,14 @@ public class GameThread extends Thread {
 	private void startItemMode_pvp() {
 		while (true) {
 			// --------------------------------------------------------- 새로운 블럭생성
-			ga.spawnBlock();
+			//ga.spawnBlock(nba.getNextBlock());
 
 			if (nextIsItem) {
-				ga.updateNextItem();
+				nba.updateNextItem();
 				nba.setIsItem(true);
 			} else {
-				ga.updateNextBlock();
+				nba.updateNextBlock();
 			}
-			nba.updateNBA(ga.getNextBlock());
 
 			// --------------------------------------------------------- 한 칸씩 블럭 내리기
 			while (ga.moveBlockDown()) {
@@ -369,7 +477,11 @@ public class GameThread extends Thread {
 			}
 			
 			// linePerItem 이상 줄 삭제하면, 다음 블럭을 아이템으로 설정하기
-			checkItem();
+			int temp = totalClearedLine / linePerItem;
+			if(temp > itemCount) {
+				itemCount = temp; // 아이템이 등장한 횟수 갱신 
+				nextIsItem = true; // 다음 블럭을 아이템으로 설정 
+			}
 		}
 	}
 	
@@ -379,9 +491,8 @@ public class GameThread extends Thread {
 		
 		while (true) {
 			// --------------------------------------------------------- 새로운 블럭 생성
-			ga.spawnBlock();
-			ga.updateNextBlock();
-			nba.updateNBA(ga.getNextBlock());
+			//ga.spawnBlock(nba.getNextBlock());
+			nba.updateNextBlock();
 
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown() && time > 0) {
@@ -449,88 +560,6 @@ public class GameThread extends Thread {
 					gf.updateScore(score);
 				}
 			}
-		}
-	}
-	
-	// 보너스 점수 획득 기준 
-	// 1. 두 줄 이상 삭제한 경우 -> checkCL
-	// 2. 레벨에 따라 낙하 속도가 상승한 경우 -> checkLevel
-
-	private void checkCL() {
-		int curCL = ga.clearLines();
-		System.out.println("curCL: " + curCL);
-
-		// 삭제된 줄이 없으면 점수 갱신 X
-
-		if (curCL == 1) { // 한 줄 삭제
-			score += curCL;
-			gf.updateScore(score);
-			System.out.println("score after 1 line clear: " + score);
-
-			totalClearedLine += curCL;
-
-		} else if (curCL >= 2) { // 두 줄 이상 삭제
-			score += (10 * curCL); // 보너스 점수
-			gf.updateScore(score);
-			System.out.println("score after 2 line clear: " + score);
-
-			totalClearedLine += curCL;
-		}
-	}
-
-	// 각 레벨마다 linePerLevel 이상 줄 삭제하면 레벨 증가
-	private void checkLevel() {
-		int lvl = totalClearedLine / linePerLevel + 1;
-		if (lvl > level) {
-			System.out.println("total CL: " + totalClearedLine);
-			
-			// 레벨 갱신
-			level = lvl;
-			gf.updateLevel(level);
-			
-			// 레벨에 따른 속도 상승 
-			if (interval > 300) {
-				interval -= speedupPerLevel;
-
-				score += (10 * level); // 보너스 점수
-				gf.updateScore(score);
-				System.out.println("score after level update: " + score);
-			}
-		}
-	}
-
-	private void checkBlockState() {
-		// 3줄 이상 삭제해서 다음 블럭이 아이템으로 설정된 경우    
-		if (nextIsItem) {
-			nextIsItem = false; // 플래그 업데이트 
-			nba.setIsItem(false);
-			
-			curIsItem = true; 
-			ga.setIsItem(true); // 이제 아이템 등장 
-		}
-		
-		// 현재 블럭이 아이템인 경우 
-		if (curIsItem) {
-			ga.twinkleItem();
-			ga.execItemFunction();
-
-			ga.setIsItem(false);
-			curIsItem = false; // 플래그 업데이트 
-			
-		} else { 
-			// 현재 블럭이 기본 블럭인 경우 
-			ga.moveBlockToBackground();
-		}
-	}
-
-	// linePerItem 이상 줄 삭제하면, 다음 블럭을 아이템으로 설정
-	private void checkItem() {
-		int temp = totalClearedLine / linePerItem;
-		if(temp > itemCount) {
-			itemCount = temp; // 아이템이 등장한 횟수 갱신 
-			
-			System.out.println("itemCount: " + itemCount);
-			nextIsItem = true; // 다음 블럭을 아이템으로 설정 
 		}
 	}
 	
