@@ -6,11 +6,12 @@ import form.GameForm;
 import tetris.GameArea;
 import tetris.GameThread;
 import tetris.NextBlockArea;
+import tetris.Tetris;
 
 class GameThreadTest {
 
 	final GameArea ga = new GameArea(600, 450, 10);
-	private NextBlockArea nba = new NextBlockArea(600, 450, ga);
+	private NextBlockArea nba = new NextBlockArea(600, 450);
 
 	final GameForm gf = new GameForm(600,450);
 	final GameThread gt = new GameThread(gf, ga, nba);

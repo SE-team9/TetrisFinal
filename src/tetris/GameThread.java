@@ -621,4 +621,8 @@ public class GameThread extends Thread {
 		score += 15;
 		gf.updateScore(score, userID);
 	}
+	
+	// test 위해 추가해두었습니다.
+	public int getSpeedUpPerLevel() {return speedupPerLevel;}
+	public int getGameMode() {return gameMode;}
 }

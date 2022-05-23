@@ -14,7 +14,7 @@ class TetrisTest {
 	private static LeaderboardForm lf;
 
 	@Test 
-	void tetrisTimeout() { // ë¹„ê¸°ëŠ¥ì  ìš”êµ¬ì‚¬í•­
+	void tetrisTimeout() { // ºñ±â´ÉÀû ¿ä±¸»çÇ×
 		assertTimeout(Duration.ofMillis(1000), () -> {
 			new Tetris();
 			Thread.sleep(300);
@@ -42,7 +42,7 @@ class TetrisTest {
 	}
 
 	@Test
-	void testGetGameMode() { // ëŒ€ì „ ëª¨ë“œ ì¶”ê°€ì‹œ ë³€ê²½ í•„ìš”
+	void testGetGameMode() { // ´ëÀü ¸ðµå Ãß°¡½Ã º¯°æ ÇÊ¿ä
 		int m = tetris.getGameMode();
 		assertTrue(m == 0 || m == 1);
 	}
