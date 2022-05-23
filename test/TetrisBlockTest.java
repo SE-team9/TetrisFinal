@@ -56,7 +56,7 @@ class TetrisBlockTest {
 
 	@Test
 	void testGetHeight() {
-		fail("Not yet implemented");
+		assertNotNull(tb.getHeight());
 	}
 
 	@Test

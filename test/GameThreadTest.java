@@ -17,12 +17,21 @@ class GameThreadTest {
 
 	@Test
 	void testRun() {
-		fail("Not yet implemented");
+		gt.run();
+		int gm = gt.getGameMode();
+		assertNotNull(gm);
 	}
 
 	@Test
 	void testGameThread() {
-		fail("Not yet implemented");
+		int spl = gt.getSpeedUpPerLevel();
+		assertTrue(spl == 80 || spl == 100 || spl == 120);
+	}
+	
+	@Test
+	void testGetSpeedUpPerLevel() {
+		int spl = gt.getSpeedUpPerLevel();
+		assertTrue(spl == 80 || spl == 100 || spl == 120);
 	}
 
 	@Test
