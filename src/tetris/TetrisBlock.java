@@ -66,14 +66,16 @@ public class TetrisBlock {
 	public Color getColor() { return color; }
 	public void setColor(Color color) { this.color = color; }
 	
-	// 인덱스 전달 받아서 기본 블럭의 색상 초기화  
-	public void setColor(int colorNum) { this.color = availableColors[colorNum]; }
+	// 인덱스에 따라 기본 블럭의 색상 초기화  
+	public void setColor(int i) { this.color = availableColors[i]; }
 	
 	public int[][] getShape() { return shape; }
+	
+	// 회전에 따라 달라지는 블럭 모양 초기화 
 	public void setShape() {
 		Random r = new Random();
 		currentRotation = r.nextInt(shapes.length);
-		shape = shapes[currentRotation]; // 회전 방향 랜덤 
+		shape = shapes[currentRotation];  
 	}
 	
 	// ---------------------------------------------------------- 블럭 움직임 제어 

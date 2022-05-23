@@ -18,10 +18,12 @@ import tetris.Tetris;
 
 public class GameForm extends JFrame {
 	private int w, h;
+	
 	private GameArea ga, ga2;
 	private GameThread gt, gt2;
 	private NextBlockArea nba, nba2;
 	private AttackLineArea ala, ala2;
+	
 	private JTextArea keyManual, keyManual2;
 	private JLabel lblScore, lblScore2; 
 	private JLabel lblLevel, lblLevel2;
@@ -44,11 +46,14 @@ public class GameForm extends JFrame {
 		initThisFrame();
 		initDisplay();
 		
+		// 여기서 먼저 새로운 블럭을 생성하고 
+		//nba = new NextBlockArea(w, h, ga);
+		nba = new NextBlockArea(w, h);
+		this.add(nba);
+		
+		// 여기로 넘겨준다. 
 		ga = new GameArea(w, h, 10);
 		this.add(ga);
-
-		nba = new NextBlockArea(w, h, ga);
-		this.add(nba);
 	}
 	
 	// 대전모드에 필요한 변수들을 초기화하고 프레임에 추가
@@ -59,20 +64,26 @@ public class GameForm extends JFrame {
 		initThisFrame_pvp();
 		initDisplay_pvp();
 
+//		nba = new NextBlockArea(w, h, ga, 0);
+//		nba2 = new NextBlockArea(w, h, ga2, w);
+		nba = new NextBlockArea(w, h, 0);
+		nba2 = new NextBlockArea(w, h, w);
+		this.add(nba);
+		this.add(nba2);
+
 		ga = new GameArea(w, h, 10, 0);
 		ga2 = new GameArea(w, h, 10, w);
 		this.add(ga);
 		this.add(ga2);
 
-		nba = new NextBlockArea(w, h, ga, 0);
-		nba2 = new NextBlockArea(w, h, ga2, w);
-		this.add(nba);
-		this.add(nba2);
-
 		ala = new AttackLineArea(w, h, 0);
 		ala2 = new AttackLineArea(w, h, w);
 		this.add(ala);
 		this.add(ala2);
+	}
+	
+	public NextBlockArea getNBA() {
+		return nba;
 	}
 
 	private void initThisFrame() {

@@ -3,24 +3,11 @@ package tetris;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
-import tetrisblocks.IShape;
-import tetrisblocks.JShape;
-import tetrisblocks.LShape;
-import tetrisblocks.OShape;
-import tetrisblocks.SShape;
-import tetrisblocks.ZShape;
-import tetrisitems.DeleteAroundU;
-import tetrisitems.FillEmpty;
-import tetrisitems.OneLineDelete;
-import tetrisitems.TwoLineDelete;
-import tetrisitems.Weight;
+import tetrisitems.*;
 
 /*
  *  초기화 
@@ -37,13 +24,16 @@ public class GameArea extends JPanel {
 	private int gridRows;
 	private int gridColumns;
 	private int gridCellSize;
-	private boolean curIsItem; // 현재 블럭이 아이템 블럭인지 확인하기 위한 변수 
 	
 	private Color[][] background;
-	private TetrisBlock[] blocks;
-	private TetrisBlock[] items;
-	private TetrisBlock block;
-	private TetrisBlock nextBlock;
+	private TetrisBlock block; // 현재 블럭 
+	private boolean isItem;
+	
+	private ArrayList<Pair> coloredCells = new ArrayList<>(); // colored cell 4개의 좌표 저장 
+	private Pair Lpos; // L문자의 최종 좌표 
+	private int randIdx; // L문자가 랜덤으로 붙는 위치 
+	private int blockIdx; // 한줄 삭제 아이템 구분을 위한 인덱스 
+	private boolean OLCflag; // 한줄 삭제 아이템에 대한 점수 부여 
 	
 	// 대전모드용 변수들			
 	private Color[][] opponent_bg; 		// 상대의 배경
@@ -51,34 +41,30 @@ public class GameArea extends JPanel {
 	private Color[][] attackLines; 		// 공격에 사용될 줄들
 	private int attackLinesNum; 		// 공격한 줄 수
 	private int grayLinesNum; 			// 이미 공격한 줄 수
-
+	
 	// 2차원 배열 생성 시, 칼럼 크기 지정은 필수 (그래서 인자로 전달 받음)
 	public GameArea(int gfW, int gfH, int columns) {
 		// GameForm 크기에 맞춰 GameArea의 (x, y) 위치 변경 
 		initThisPanel(gfW, gfH);
-		initBlocks();
 				
 		// 20행 10열이지만, 설정에 따라 셀의 크기가 바뀜. 
 		gridColumns = columns; // 10열
-		gridCellSize = this.getBounds().width / gridColumns; // 20 -> 25 -> 30 
+		gridCellSize = this.getBounds().width / gridColumns; // 20 24 28
 		gridRows = this.getBounds().height / gridCellSize; // 20행 
 		
-		// 게임 스레드 시작할 때마다 업데이트 해줘야 함. 
-		curIsItem = false;
-		updateNextBlock();
+		// 게임 스레드 시작할 때마다 상태 업데이트 
+		isItem = false;
 	}
 	
 	// 대전 모드 
 	public GameArea(int gfW, int gfH, int columns, int xGap) {
 		initThisPanel(gfW, gfH, xGap);
-		initBlocks();
 		
 		gridColumns = columns;
 		gridCellSize = this.getBounds().width / gridColumns;
 		gridRows = this.getBounds().height / gridCellSize;
 		
-		curIsItem = false;
-		updateNextBlock();
+		isItem = false;
 	}
 
 	// --------------------------------------------------------------- 초기화 
@@ -99,115 +85,36 @@ public class GameArea extends JPanel {
 	public void initBackgroundArray() {
 		background = new Color[gridRows][gridColumns];
 	}
-
-	public void initBlocks() {
-		blocks = new TetrisBlock[] { new IShape(), new JShape(), new LShape(), new OShape(), new ZShape(),
-				new SShape() };
-		
-		items = new TetrisBlock[] { new FillEmpty(), new Weight(), new DeleteAroundU(), new TwoLineDelete(),
-				new OneLineDelete() };
-	}
 	
 	// 게임 스레드 시작할 때마다 상태 업데이트 
 	public void initGameArea() {
-		curIsItem = false;
-		
-		initBackgroundArray(); // 시작할 때마다 배경 초기화
-		updateNextBlock();
+		isItem = false;
+		initBackgroundArray();
 	}
 	
 	// 대전모드
 	public void initGameArea_pvp() {
-		curIsItem = false;
+		isItem = false;
 		grayLinesNum = 0;
 		attackLines = new Color[10][gridColumns];
-		
-		initBackgroundArray(); 
-		updateNextBlock(); 
+		initBackgroundArray();
 	}
 	
-	public void setIsItem(boolean flag) {
-		curIsItem = flag;
+	public void setIsItem(boolean b) {
+		isItem = b;
 	}
 
 	// --------------------------------------------------------------- 블럭 생성
-	
-	// 다음 블럭 랜덤으로 
-	public void updateNextBlock() {
-		int level = Tetris.getGameLevel();
-		int r = makeRandom(level);
-		nextBlock = blocks[r];
-		nextBlock.setShape();
-	}
 
-	// 다음 아이템 랜덤으로 
-	public void updateNextItem() {
-		Random r = new Random();
-		nextBlock = items[r.nextInt(items.length)];
-		nextBlock.setShape();
-	}
-
-	// 다음 블럭 모양을 참조하여, 현재 새 블럭 생성 
-	public void spawnBlock() {
+	// 새 블럭 생성 
+	public void spawnBlock(TetrisBlock nextBlock) {
+		// 다음 블럭의 모양을 그대로 가져온다. 
 		block = nextBlock;
-		block.spawn(gridColumns); // 랜덤한 위치에서 떨어지도록 
+		
+		// 랜덤한 위치에서 떨어지도록
+		block.spawn(gridColumns);
 	}
 	
-
-	// --------------------------------------------------------------- 난이도 조절  
-
-	// 가중치 랜덤 함수 생성
-	public static <E> E getWeightedRandom(Map<E, Double> weights, Random random) {
-		E result = null;
-		double bestValue = Double.MAX_VALUE;
-
-		for (E element : weights.keySet()) {
-			double value = -Math.log(random.nextDouble()) / weights.get(element);
-			if (value < bestValue) {
-				bestValue = value;
-				result = element;
-			}
-		}
-		
-		return result;
-	}
-
-	// 난이도에 따라 I형 블럭의 생성 확률을 다르게 한다. 
-	public int makeRandom(int level) {
-		Map<String, Double> w = new HashMap<String, Double>();
-		Random r = new Random();
-
-		double weight, iWeight;
-		int blockNum; // 블럭 종류 
-
-		if (level == 0) { // easy
-			weight = 14.0;
-			iWeight = 16.0; // I형 블럭의 등장 확률 20% 증가
-			w.put("0", iWeight);
-
-			for (int i = 1; i < blocks.length; i++) {
-				w.put(Integer.toString(i), weight);
-			}
-
-			blockNum = Integer.parseInt(getWeightedRandom(w, r));
-		} else if (level == 2) { // hard
-			weight = 15.0;
-			iWeight = 10.0; // I형 블럭의 등장 확률 20% 감소
-			w.put("0", iWeight);
-
-			for (int i = 1; i < blocks.length; i++) {
-				w.put(Integer.toString(i), weight);
-			}
-
-			blockNum = Integer.parseInt(getWeightedRandom(w, r));
-
-		} else { // normal 
-			blockNum = r.nextInt(blocks.length);
-		}
-
-		return blockNum;
-	}
-
 	// ------------------------------------------------------------- 블럭 조작 / 경계 확인
 	
 	// 블럭이 위쪽 경계를 넘어갔는지 확인한다.
@@ -440,89 +347,68 @@ public class GameArea extends JPanel {
 	
 	// 현재 아이템의 기능을 수행한다.
 	public void execItemFunction() {
-		if (this.block instanceof FillEmpty) {
-			fillEmpty();
-		} else if (this.block instanceof TwoLineDelete) {
-			twoLineDelete();
-		} else if (this.block instanceof Weight) {
-			Weight();
-		} else if (this.block instanceof DeleteAroundU) {
-			DeleteAroundU();
-		} else if (this.block instanceof OneLineDelete) {
-			oneLineDelte();
+		switch(blockIdx) {
+		case 7:
+			clearTwoLine(); 
+			break;
+		case 8:
+			deleteWeight();
+			break;
+		case 9:
+			deleteAroundU();
+			break;
+		case 10:
+			clearAll();
+			break;
+		case 11:
+			clearOneLine();
+			break;
 		}
-	}
-	
-	// 빈칸 메꾸는 아이템 
-	public void fillEmpty() {
-		int xPos = block.getX();
-		int emptyNum = 0;
-		int currentR;
-		int nextR;
-
-		for (int r = gridRows - 1; r > 0; r--) {
-			if (background[r][xPos] == null) {
-				emptyNum++;
-				nextR = r - 1;
-				while (nextR >= 0 && background[nextR][xPos] == null) {
-					nextR--;
-				}
-				if (nextR == -1) {
-					return;
-				} else {
-					currentR = r;
-					for (; nextR >= 0; nextR--, currentR--) {
-						background[currentR][xPos] = background[nextR][xPos];
-						repaint();
-					}
-				}
-			}
-		}
-		while (emptyNum > 0) {
-			block.moveDown();
-		}
-		repaint();
 	}
 
 	// 한 줄 삭제 아이템 
-	public void oneLineDelte() {
-		int yPos = block.getY();
+	public void clearOneLine() {
+		int row = Lpos.y / gridCellSize;
+		
+		clearLine(row); 
+		shiftDown(row); 
+		clearLine(0);    
+		
+		// 한 줄 삭제에 대한 점수 부여를 위해 플래그 설정 
+		OLCflag = true;
 
-		clearLine(yPos);
-		shiftDown(yPos);
+		repaint();
+	}
+
+	// 두 줄 삭제 아이템 (회전해도 모양 그대로) 
+	public void clearTwoLine() {
+		int y = block.getY();
+		clearLine(y);
+		shiftDown(y);
+		
+		y++;
+		clearLine(y);
+		shiftDown(y);
 		
 		repaint();
 	}
 
-	// 두 줄 삭제 아이템 
-	public void twoLineDelete() {
-		int yPos = block.getY();
-		int time = 0;
-
-		for (int r = yPos + 2; r >= yPos + 1 && time < 2; r--) {
-			clearLine(r);
-			shiftDown(r);
-			r++;
-			time++;
-
-			repaint();
-		}
-	}
-
-	// 무게추 아이템
-	public void Weight() {
+	// 무게추 아이템 (회전해도 모양 그대로) 
+	public void deleteWeight() {
+		// 밑으로 한칸씩 내려가면서 
 		for (int row = block.getBottomEdge(); row < gridRows; row++) {
+			// 블럭의 너비만큼 삭제 
 			for (int col = block.getLeftEdge(); col < block.getRightEdge(); col++) {
 				background[row][col] = null;
 			}
+			
 			block.moveDown();
 			repaint();
 		}
-		moveBlockToBackground();
 	}
 
-	// 좌우아래를 모두 삭제하는 바구니 아이템 
-	public void DeleteAroundU() {
+	// 좌우아래를 모두 삭제하는 바구니 아이템 (회전해도 모양 그대로)
+	public void deleteAroundU() {
 		for (int y = block.getY(); y <= block.getBottomEdge(); y++) {
 			if (y >= gridRows)
 				break;
@@ -534,30 +420,71 @@ public class GameArea extends JPanel {
 				background[y][x] = null;
 			}
 		}
+		
+		repaint();
 	}
-
-	// ------------------------------------------------------------------ 배경, 줄 삭제  
 	
-	// 현재 블럭을 배경에 추가한다.
-	public void moveBlockToBackground() {
-		int[][] shape = block.getShape();
-		int h = block.getHeight();
-		int w = block.getWidth();
-
-		int xPos = block.getX();
-		int yPos = block.getY();
-
-		Color color = block.getColor();
-
-		for (int r = 0; r < h; r++) {
-			for (int c = 0; c < w; c++) {
-				if (shape[r][c] == 1) { // 해당 위치가 현재 블럭이 차지하는 공간이라면
-					background[r + yPos][c + xPos] = color;
+	// 모든 블럭을 삭제하는 아이템 
+	public void clearAll() {
+		for(int i = 0; i < gridRows; i++) {
+			for (int j = 0; j < gridColumns; j++) {
+				if(background[i][j] != null) {
+					background[i][j] = null;
 				}
 			}
 		}
 		
-		block = null; // 이 부분이 왜 필요한 걸까! 
+		repaint();
+	}
+
+	// ------------------------------------------------------------------ 줄 삭제, 배경으로 전환   
+	
+	private void twinkleCL(int r) {
+		for (int c = 0; c < gridColumns; c++) {
+			background[r][c] = Color.white;
+			repaint();
+		}
+		
+		try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		for (int c = 0; c < gridColumns; c++) {
+			background[r][c] = Color.black;
+			repaint();
+		}
+		
+		try {
+			Thread.sleep(150);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateGameArea(int r) {
+		clearLine(r); // r행 삭제 
+		shiftDown(r); // 0행 제외하고 한칸씩 내리기 
+		clearLine(0); // 0행 삭제 
+
+		repaint();
+	}
+
+	// 배경에서 r행을 지운다.
+	private void clearLine(int r) {
+		for (int i = 0; i < gridColumns; i++) {
+			background[r][i] = null;
+		}
+	}
+
+	// r행 위의 모든 줄을 한칸씩 내려준다.
+	private void shiftDown(int r) {
+		for (int row = r; row > 0; row--) { // 0행은 제외 
+			for (int col = 0; col < gridColumns; col++) {
+				background[row][col] = background[row - 1][col];
+			}
+		}
 	}
 
 	// 줄 삭제하면서 그 개수를 리턴
@@ -622,50 +549,27 @@ public class GameArea extends JPanel {
 		}
 		return linesCleared;
 	}
-
-	private void twinkleCL(int r) {
-		for (int c = 0; c < gridColumns; c++) {
-			background[r][c] = Color.white;
-			repaint();
-		}
-		try {
-			Thread.sleep(150);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		for (int c = 0; c < gridColumns; c++) {
-			background[r][c] = Color.black;
-			repaint();
-		}
-		try {
-			Thread.sleep(150);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 	
-	public void updateGameArea(int r) {
-		clearLine(r);
-		shiftDown(r);
-		clearLine(0); // 첫번째 행이 null이 되므로 따로 지워주기
+	// 현재 블럭을 배경에 추가한다.
+	public void moveBlockToBackground() {
+		int[][] shape = block.getShape();
+		int h = block.getHeight();
+		int w = block.getWidth();
 
-		repaint();
-	}
+		int xPos = block.getX();
+		int yPos = block.getY();
 
-	// 배경에서 r행을 지운다.
-	private void clearLine(int r) {
-		for (int i = 0; i < gridColumns; i++) {
-			background[r][i] = null;
-		}
-	}
+		Color color = block.getColor();
 
-	// r행 위의 모든 줄을 한칸씩 내려준다.
-	private void shiftDown(int r) {
-		for (int row = r; row > 0; row--) {
-			for (int col = 0; col < gridColumns; col++) {
-				background[row][col] = background[row - 1][col];
+		for (int r = 0; r < h; r++) {
+			for (int c = 0; c < w; c++) {
+				if (shape[r][c] == 1) { // 해당 위치가 현재 블럭이 차지하는 공간이라면
+					background[r + yPos][c + xPos] = color;
+				}
 			}
 		}
+		
+		block = null; // 이 부분이 왜 필요한 걸까! 
 	}
   
   	// -------------------------------------------------------------------------------- 대전모드를 위한 동작
@@ -730,7 +634,7 @@ public class GameArea extends JPanel {
 	public void attack() {
 		
 		// 두 줄 이상이 삭제되었을 때만
-		if(attackLinesNum<2) {
+		if(attackLinesNum < 2) {
 			attackLinesNum = 0;
 			return;
 		}
@@ -751,35 +655,86 @@ public class GameArea extends JPanel {
 	
 	// ------------------------------------------------------------- 그리기 
 	
+	public void setBlockIndex(int index) {
+		this.blockIdx = index;
+	}
+	
+	class Pair{
+		int x, y;
+		Pair(int x, int y){
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
 	// 현재 블럭을 그려준다.
 	private void drawBlock(Graphics g) {
 		if (block == null)
 			return;
-
-		int h = block.getHeight();
-		int w = block.getWidth();
-		Color c = block.getColor();
-		int[][] shape = block.getShape();
-
-		for (int row = 0; row < h; row++) {
-			for (int col = 0; col < w; col++) {
-
-				if (shape[row][col] == 1) { // colored cell
-					int x = (block.getX() + col) * gridCellSize;
-					int y = (block.getY() + row) * gridCellSize;
-
-					if (this.block instanceof OneLineDelete) {
-						drawGridL(g, c, x, y);
-					}
-					// 현재 블럭이 아이템이면 원으로, 기본 블럭이면 사각형으로 그린다. 
-					else if (curIsItem) {
-						drawGridOval(g, c, x, y);
-					} else {
-						drawGridSquare(g, c, x, y);
+		
+		if(isItem && blockIdx == 11) {
+			drawRandomL(g);
+		}else {
+			int h = block.getHeight();
+			int w = block.getWidth();
+			Color c = block.getColor();
+			int[][] shape = block.getShape();
+			
+			for (int row = 0; row < h; row++) {
+				for (int col = 0; col < w; col++) { 
+					if (shape[row][col] == 1) { 
+						int x = (block.getX() + col) * gridCellSize;
+						int y = (block.getY() + row) * gridCellSize;
+						
+						if(isItem) {
+							drawGridCircle(g, c, x, y); 
+						}
+						else {
+							drawGridSquare(g, c, x, y);
+						}
 					}
 				}
 			}
 		}
+		
+		// 스레드에 의해 한칸씩 떨어질 때마다 블럭 다시 그리기 
+		repaint();
+	}
+
+	// repaint 될 때마다 바뀌는 블럭 좌표에 따라 그림을 다시 그린다. 
+	private void drawRandomL(Graphics g) {
+		int h = block.getHeight();
+		int w = block.getWidth();
+		Color c = block.getColor();
+		int[][] shape = block.getShape();
+		
+		for (int row = 0; row < h; row++) {
+			for (int col = 0; col < w; col++) {
+				if (shape[row][col] == 1) { 
+					int x = (block.getX() + col) * gridCellSize;
+					int y = (block.getY() + row) * gridCellSize;
+					
+					coloredCells.add(new Pair(x, y));
+				}
+			}
+		}
+		
+		// 처음 블럭이 생성될 때 결정된 랜덤 위치에 L문자를 그린다.
+		Lpos = coloredCells.get(randIdx);
+		
+		g.setFont(new Font("TimesRoman", Font.BOLD, 25));
+	    g.setColor(Color.black);	    
+		g.drawString("L", Lpos.x, Lpos.y + gridCellSize);
+		
+		// 다른 셀에는 사각형 그리기 
+		for(int i = 0; i < 4; i++) {
+			if(i != randIdx) {
+				Pair p = coloredCells.get(i);
+				drawGridSquare(g, c, p.x, p.y);
+			}
+		}
+		
+		coloredCells.clear(); // 그 다음 repaint에 대한 좌표 저장을 위해 클리어!!
 	}
 
 	// 배경을 그려준다.
@@ -809,20 +764,7 @@ public class GameArea extends JPanel {
 		g.drawRect(x, y, gridCellSize, gridCellSize);
 	}
 
-	private void drawGridOval(Graphics g, Color color, int x, int y) {
-		g.setColor(color);
-		g.fillOval(x, y, gridCellSize, gridCellSize);
-		g.setColor(Color.black);
-		g.drawOval(x, y, gridCellSize, gridCellSize);
-	}
-
-	// 문자 L을 포함한 블럭을 그려준다. 
-	private void drawGridL(Graphics g, Color color, int x, int y) {
-		String letterL = "L";
-		g.setFont(new Font("Arial", Font.BOLD, 20));
-		g.setColor(Color.black);
-		g.drawString(letterL, x, y);
-
+	private void drawGridCircle(Graphics g, Color color, int x, int y) {
 		g.setColor(color);
 		g.fillOval(x, y, gridCellSize, gridCellSize);
 		g.setColor(Color.black);
@@ -836,24 +778,12 @@ public class GameArea extends JPanel {
 		drawBackground(g);
 		drawBlock(g);
 	}
-	
-	// ------------------------------------------------------------------- getter
+
+	// ------------------------------------------------------------------- 테스트 코드에 쓰이는 getter
 	public Color[][] getBackgroundArray() {
 		return background;
 	}
-
-	public TetrisBlock[] getBlocks() {
-		return blocks;
-	}
 	
-	public TetrisBlock[] getItems() {
-		return items;
-	}
-	
-	public TetrisBlock getNextBlock() {
-		return nextBlock;
-	}
-
 	public TetrisBlock getBlock() {
 		return block;
 	}
@@ -862,7 +792,19 @@ public class GameArea extends JPanel {
 		return gridColumns;
 	}
 
-	public int getGridCellSize() {
-		return gridCellSize; // NBA에 블럭 그릴 때 필요 
+	public void setRandomIndex(int index) {
+		this.randIdx = index;
 	}
+	
+	public void setOLCflag(boolean b) {
+		this.OLCflag = b;
+	}
+	
+	public boolean getOLCflag() {
+		return OLCflag;
+	}
+
+//	public int getGridCellSize() {
+//		return gridCellSize; // NBA에 블럭 그릴 때 필요 
+//	}
 }

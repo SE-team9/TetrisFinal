@@ -1,4 +1,3 @@
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
@@ -33,19 +32,19 @@ class GameAreaTest {
 		assertNotNull(background);
 	}
 
-	@Test
-	@DisplayName("블럭과 아이템 초기화")
-	void testInitBlocks() {
-		ga.initBlocks();
-		
-		TetrisBlock[] blocks = ga.getBlocks();
-		assertNotNull(blocks);
-		assertEquals(blocks.length, 6);
-		
-		TetrisBlock[] items = ga.getItems();
-		assertNotNull(items);
-		assertEquals(items.length, 5);
-	}
+//	@Test
+//	@DisplayName("블럭과 아이템 초기화")
+//	void testInitBlocks() {
+//		ga.initBlocks();
+//		
+//		TetrisBlock[] blocks = ga.getBlocks();
+//		assertNotNull(blocks);
+//		assertEquals(blocks.length, 6);
+//		
+//		TetrisBlock[] items = ga.getItems();
+//		assertNotNull(items);
+//		assertEquals(items.length, 5);
+//	}
 
 	@Test
 	@Disabled
@@ -68,20 +67,7 @@ class GameAreaTest {
 	@Test
 	@Disabled
 	void testMakeRandom() {
-		final GameArea ga = new GameArea(600,450,10);
-
-		int[] cnt = new int[3];
-		for(int j = 0; j < 3; j++) {
-			for(int i = 0; i < 1000; i++) {
-				int r = ga.makeRandom(j);
-				if(r == 0)
-					cnt[j]++;
-			}
-		}
-
-		assertEquals(cnt[0], 167, 50);
-		assertEquals(cnt[1], 167, 50);
-		assertEquals(cnt[2], 167, 50);
+		fail("Not yet implemented");
 	}
 
 	@Test
@@ -249,10 +235,7 @@ class GameAreaTest {
 	@Test
 	@Disabled
 	void testTwoLineDelete() {
-//		final TetrisBlock block= new TetrisBlock({{ 1, 1 }, { 1, 1 }} );
-//		int yPos = block.getY();
-//		ga.twoLineDelete();
-		
+		fail("Not yet implemented");
 	}
 
 	@Test

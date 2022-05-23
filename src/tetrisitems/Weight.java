@@ -5,12 +5,12 @@ import java.awt.Color;
 import tetris.TetrisBlock;
 
 public class Weight extends TetrisBlock {
-
 	public Weight() {
 		super(new int[][] {{0, 1, 1, 0}, {1, 1, 1, 1}});
-		setColor(Color.gray);
+		setColor(Color.CYAN);
 	}
 	
+	// 블럭을 회전시킨 모양이 모두 동일하도록 오버라이딩 
 	@ Override
 	protected void initShapes() {
 		shapes = new int[4][][];
@@ -25,6 +25,7 @@ public class Weight extends TetrisBlock {
 					shapes[i][y][x] = shape[y][x];
 				}
 			}
+			
 			shape = shapes[i];
 		}
 	}
