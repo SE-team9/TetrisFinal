@@ -81,19 +81,14 @@ public class NextBlockArea extends JPanel {
 		
 		// 인덱스 7 8 9 10 11 중에서 랜덤으로 11이 나오면 한줄 삭제 아이템이라고 생각하자. 
 		Random r = new Random();
-		//blockIdx = 7 + r.nextInt(itemBlockNum);
-		blockIdx = 11;
+		blockIdx = 7 + r.nextInt(itemBlockNum);
 		
 		if(blockIdx == 11) { // 한줄 삭제 아이템 
-			
-			//--------------------------------------------
 			// 기본 블럭으로 (0~6)
 			nextBlock = blocks[r.nextInt(defaultBlockNum)];
 			
 			// L 문자가 붙을 랜덤 위치 결정
 			randIdx = r.nextInt(4);
-
-			//--------------------------------------------
 			
 		}else {
 			// 아이템 블럭으로 (7~10)
@@ -117,7 +112,7 @@ public class NextBlockArea extends JPanel {
 		return randIdx;
 	}
 	
-	// ------------------------------------- 
+	// ------------------------------------ GameThread를 통해 GameArea에 넘겨줘야 하는 정보들 
 	
 	// 게임이 다시 시작될 때마다 초기화
 	public void initNextBlockArea() {

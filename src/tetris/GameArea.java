@@ -347,25 +347,26 @@ public class GameArea extends JPanel {
 	
 	// 현재 아이템의 기능을 수행한다.
 	public void execItemFunction() {
-		if(blockIdx == 11) {
-			clearOneLine();
-		}
-		
-		if(this.block instanceof TwoLineClear) {
+		switch(blockIdx) {
+		case 7:
 			clearTwoLine(); 
-			
-		}else if(this.block instanceof Weight) {
+			break;
+		case 8:
 			deleteWeight();
-			
-		}else if(this.block instanceof DeleteAroundU) {
+			break;
+		case 9:
 			deleteAroundU();
-			
-		}else if(this.block instanceof AllClear) {
+			break;
+		case 10:
 			clearAll();
+			break;
+		case 11:
+			clearOneLine();
+			break;
 		}
 	}
 
-	// 한 줄 삭제 아이템 (블럭 회전에 따라 모양 달라짐)
+	// 한 줄 삭제 아이템 
 	public void clearOneLine() {
 		int row = Lpos.y / gridCellSize;
 		
@@ -373,42 +374,21 @@ public class GameArea extends JPanel {
 		shiftDown(row); 
 		clearLine(0);    
 		
-		// 한 줄 삭제에 대한 점수 부여! 
+		// 한 줄 삭제에 대한 점수 부여를 위해 플래그 설정 
 		OLCflag = true;
 
 		repaint();
 	}
-	
-	public void setOLCflag(boolean b) {
-		this.OLCflag = b;
-	}
-	
-	public boolean getOLCflag() {
-		return OLCflag;
-	}
 
 	// 두 줄 삭제 아이템 (회전해도 모양 그대로) 
 	public void clearTwoLine() {
-		int yPos = block.getY();
+		int y = block.getY();
+		clearLine(y);
+		shiftDown(y);
 		
-		// 두 줄 삭제 
-		for (int i = 0; i < gridColumns; i++) {
-			background[yPos][i] = null;
-			background[yPos + 1][i] = null;
-		}
-		
-		// 두칸씩 내리기 
-		for (int row = yPos; row >= 2; row--) { // 0, 1행은 제외 
-			for (int col = 0; col < gridColumns; col++) {
-				background[row][col] = background[row - 2][col];
-			}
-		}
-		
-		// 제일 위의 2행 삭제 
-		for (int i = 0; i < gridColumns; i++) {
-			background[0][i] = null;
-			background[1][i] = null;
-		}
+		y++;
+		clearLine(y);
+		shiftDown(y);
 		
 		repaint();
 	}
@@ -814,6 +794,14 @@ public class GameArea extends JPanel {
 
 	public void setRandomIndex(int index) {
 		this.randIdx = index;
+	}
+	
+	public void setOLCflag(boolean b) {
+		this.OLCflag = b;
+	}
+	
+	public boolean getOLCflag() {
+		return OLCflag;
 	}
 
 //	public int getGridCellSize() {
