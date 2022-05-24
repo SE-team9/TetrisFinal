@@ -9,8 +9,8 @@ import tetris.TetrisBlock;
 class NextBlockAreaTest {
 
 	final GameArea ga = new GameArea(600, 450, 10);
-	private NextBlockArea nba = new NextBlockArea(600, 450, ga);
-	private TetrisBlock nextBlock = ga.getNextBlock();
+	private NextBlockArea nba = new NextBlockArea(600, 450);
+	private TetrisBlock nextBlock = ga.getBlock();
 
 	@Test
 	void testNextBlockArea() {
@@ -25,7 +25,7 @@ class NextBlockAreaTest {
 
 	@Test
 	void testUpdateNBA() {
-		nba.updateNBA(nextBlock);
+		nba.updateNextBlock(nextBlock);
 		assertNotNull(nextBlock);
 	}
 

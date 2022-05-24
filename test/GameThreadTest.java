@@ -6,23 +6,33 @@ import form.GameForm;
 import tetris.GameArea;
 import tetris.GameThread;
 import tetris.NextBlockArea;
+import tetris.Tetris;
 
 class GameThreadTest {
 
 	final GameArea ga = new GameArea(600, 450, 10);
-	private NextBlockArea nba = new NextBlockArea(600, 450, ga);
+	private NextBlockArea nba = new NextBlockArea(600, 450);
 
 	final GameForm gf = new GameForm(600,450);
 	final GameThread gt = new GameThread(gf, ga, nba);
 
 	@Test
 	void testRun() {
-		fail("Not yet implemented");
+		gt.run();
+		int gm = gt.getGameMode();
+		assertNotNull(gm);
 	}
 
 	@Test
 	void testGameThread() {
-		fail("Not yet implemented");
+		int spl = gt.getSpeedUpPerLevel();
+		assertTrue(spl == 80 || spl == 100 || spl == 120);
+	}
+	
+	@Test
+	void testGetSpeedUpPerLevel() {
+		int spl = gt.getSpeedUpPerLevel();
+		assertTrue(spl == 80 || spl == 100 || spl == 120);
 	}
 
 	@Test
