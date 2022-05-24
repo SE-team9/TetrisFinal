@@ -78,10 +78,10 @@ public class NextBlockArea extends JPanel {
 	
 	// 다음 아이템 랜덤으로 설정 
 	public void updateNextItem() {
-		
-		// 인덱스 7 8 9 10 11 중에서 랜덤으로 11이 나오면 한줄 삭제 아이템이라고 생각하자. 
+		// 인덱스 7 8 9 10 11 중에서 랜덤으로 11이 나오면 한줄 삭제 아이템
 		Random r = new Random();
 		blockIdx = 7 + r.nextInt(itemBlockNum);
+		//blockIdx = 11;
 		
 		if(blockIdx == 11) { // 한줄 삭제 아이템 
 			// 기본 블럭으로 (0~6)

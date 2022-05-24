@@ -544,10 +544,13 @@ public class GameThread extends Thread {
 
 			// --------------------------------------------------------- 게임 종료 확인
 			
-			// TODO: 조건문에 의하면 userID가 1일 때만 종료될텐데??? 
-			if (ga.isBlockOutOfBounds() || (time <= 0 && userID == 1)) {
+			if (ga.isBlockOutOfBounds() || time <= 0) {
+				// TODO: 점수 비교해서 더 큰 사람이 뜨도록 
+				
 				gf.interrupt_Opp(userID);
+				
 				JOptionPane.showMessageDialog(null, (3 - userID) + " Player Win!");
+				
 				gf.setVisible(false);
 				Tetris.showStartup();
 				break;

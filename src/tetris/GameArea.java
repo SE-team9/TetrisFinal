@@ -594,10 +594,12 @@ public class GameArea extends JPanel {
 	}
 	
 	// 블럭이 배경으로 옮겨지기 전의 배경에서 공격에 사용될 줄을 저장한다.
+	// 여기서 NPE 발생함 ----------------------------------------------
 	public void makeAttackLine(int r) {
 		attackLines[attackLinesNum] = pre_background[r];
 		attackLinesNum++;
 	}
+	// ----------------------------------------------------------------
 
 	// 상대 배경의 아래 10줄 중 gray 블럭이 포함된 줄의 수를 세서 공격한 줄 수를 구한다. 
 	public void setGrayLinesNum() {
