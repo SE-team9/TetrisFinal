@@ -1,34 +1,32 @@
+package test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
-import form.GameForm;
 import form.StartupForm;
 
 class StartupFormTest {
-
-	
 	@Test
 	void testStartupForm() {
 		final StartupForm sf = new StartupForm(600,450);
 	}
-	
-	@Test
+  
+  @Test
 	void testMoveUp() {
 		final StartupForm sf = new StartupForm(600,450);
 		sf.moveUp();
 		assertNotNull(sf.getCurPos());
 	}
-
+  
 	@Test
 	void testMoveDown() {
 		final StartupForm sf = new StartupForm(600,450);
 		sf.moveDown();
 		assertNotNull(sf.getCurPos());
 	}
-
 	@Test
 	void testMoveRight() {
 		final StartupForm sf = new StartupForm(600,450);
@@ -49,14 +47,14 @@ class StartupFormTest {
 		final StartupForm sf = new StartupForm(600,450);
 		assertNotNull(sf.getCurrentGameMode());
 	}
-	
-	@Test 
+
+  @Test 
 	void testSetCurrentGameMode() {
 		final StartupForm sf = new StartupForm(600,450);
 		sf.setCurrentGameMode(0);
 		assertTrue(sf.getCurrentGameMode()==0);
 	}
-
+ 
 	@Test
 	void testMain() {
 		final StartupForm sf = new StartupForm(600,450);
