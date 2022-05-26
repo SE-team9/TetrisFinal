@@ -286,6 +286,10 @@ public class OptionForm extends JFrame {
 		return confirmedColumn[2];
 	}
 	
+	public void setCurrentGameLevel(int n) {
+		
+	}
+	
 	// »ö¸Í ¸ðµå 
 	public int getCurrentColorMode() {
 		return confirmedColumn[3];

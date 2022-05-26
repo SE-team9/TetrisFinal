@@ -628,4 +628,5 @@ public class GameThread extends Thread {
 	// test 위해 추가해두었습니다.
 	public int getSpeedUpPerLevel() {return speedupPerLevel;}
 	public int getGameMode() {return gameMode;}
+	public void setLevelMode(int n) {levelMode = n;}
 }
