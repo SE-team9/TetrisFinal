@@ -14,16 +14,47 @@ class StartupFormTest {
 	void testStartupForm() {
 		final StartupForm sf = new StartupForm(600,450);
 	}
+	
+	@Test
+	void testMoveUp() {
+		final StartupForm sf = new StartupForm(600,450);
+		sf.moveUp();
+		assertNotNull(sf.getCurPos());
+	}
 
 	@Test
-	void testInitComponents() {
-		fail("Not yet implemented");
+	void testMoveDown() {
+		final StartupForm sf = new StartupForm(600,450);
+		sf.moveDown();
+		assertNotNull(sf.getCurPos());
 	}
+
+	@Test
+	void testMoveRight() {
+		final StartupForm sf = new StartupForm(600,450);
+		sf.moveRight();
+		assertNotNull(sf.getCurGameMode());
+	}
+	
+	@Test
+	void testMoveLeft() {
+		final StartupForm sf = new StartupForm(600,450);
+		sf.moveLeft();
+		assertNotNull(sf.getCurGameMode());
+	}
+	
 
 	@Test
 	void testGetCurrentGameMode() {
 		final StartupForm sf = new StartupForm(600,450);
 		assertNotNull(sf.getCurrentGameMode());
+	}
+	
+	@Test 
+	void testSetCurrentGameMode() {
+		final StartupForm sf = new StartupForm(600,450);
+		sf.setCurrentGameMode(0);
+		assertTrue(sf.getCurrentGameMode()==0);
 	}
 
 	@Test
