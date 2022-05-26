@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import tetris.GameArea;
 import tetris.NextBlockArea;
+import tetris.Tetris;
 import tetris.TetrisBlock;
 
 class NextBlockAreaTest {
@@ -42,5 +43,24 @@ class NextBlockAreaTest {
 		assertNotNull(nba.getRandIndex());
 		assertNotNull(nba.getBlockIndex());
 	}
-
+	
+	@Test
+	void testUpdatePanelSize() {
+		Tetris.setFrameSize(1);
+		NextBlockArea nba2 = new NextBlockArea(600, 450);
+		int w = nba2.getWidth();
+		assertEquals(w, 140);
+		
+		Tetris.setFrameSize(2);
+		NextBlockArea nba3 = new NextBlockArea(600, 450);
+		w = nba3.getWidth();
+		assertEquals(w, 160);
+		
+		Tetris.setFrameSize(0);
+		NextBlockArea nba4 = new NextBlockArea(600, 450);
+		w = nba4.getWidth();
+		assertEquals(w, 120);
+		
+	}
+	
 }
