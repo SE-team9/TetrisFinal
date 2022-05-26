@@ -222,7 +222,7 @@ public class OptionForm extends JFrame {
 		updateFrameSize(600, 450);
 	}
 	
-	private void moveUp() {
+	public void moveUp() {
 		lblArrow[0].setVisible(false);
 		lblArrow[1].setVisible(false);
 		
@@ -238,7 +238,7 @@ public class OptionForm extends JFrame {
 		lblArrow[1].setVisible(true);
 	}
 
-	private void moveDown() {
+	public void moveDown() {
 		lblArrow[0].setVisible(false);
 		lblArrow[1].setVisible(false);
 		
@@ -254,7 +254,7 @@ public class OptionForm extends JFrame {
 		lblArrow[1].setVisible(true);
 	}
 
-	private void moveRight() {
+	public void moveRight() {
 		// 좌우 화살표 키 입력에 따라 포커스가 놓인 칼럼 위치 바꾸기 
 		focusColumn[row]++;
 		
@@ -266,7 +266,7 @@ public class OptionForm extends JFrame {
 		btnOption[row].setText(optionArray[row][focusColumn[row]]);
 	}
 
-	private void moveLeft() {
+	public void moveLeft() {
 		focusColumn[row]--;
 		
 		if(focusColumn[row] < 0) {
@@ -296,7 +296,7 @@ public class OptionForm extends JFrame {
 	}
 	
 	// 스코어보드 기록 초기화 (파일명으로 검색)
-	private void initScoreboard() {
+	public void initScoreboard() {
 		File file = new File("leaderboardFile_Normal");
 		File file2 = new File("leaderboardFile_Item");
 		
@@ -334,6 +334,10 @@ public class OptionForm extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
+	//test를 위한 함수
+	public int getRow() {return row;}
+	public int getfocusColumn() {return focusColumn[0];}
 	
 	// OptionForm 프레임 실행
 	public static void main(String[] args) {

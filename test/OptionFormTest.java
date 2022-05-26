@@ -10,27 +10,18 @@ import form.OptionForm;
 class OptionFormTest {
 
 	final OptionForm of = new OptionForm(600,450);
-
-	@Test
-	void testOptionForm() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testInitComponents() {
-		fail("Not yet implemented");
-	}
+	
 
 	@Test
 	void testGetCurrentKeyMode() {
 		int km = of.getCurrentColorMode();
-		assertTrue(km == 0 || km == 1);
+		assertNotNull(km);
 	}
 
 	@Test
 	void testGetCurrentGameLevel() { // 대전모드 추가시 변경 필요
 		int l = of.getCurrentColorMode();
-		assertTrue(l == 0 || l == 1 || l == 2);
+		assertNotNull(l);
 	}
 
 	@Test
@@ -41,7 +32,50 @@ class OptionFormTest {
 
 	@Test
 	void testSaveAllSettings() {
-		fail("Not yet implemented");
+		assertTimeout(Duration.ofMillis(10000),() ->{
+			of.saveAllSettings();
+			Thread.sleep(300);
+		});
+	}
+	
+	@Test
+	void testInitScoreboard() {
+		assertTimeout(Duration.ofMillis(10000),() ->{
+			of.initScoreboard();
+			Thread.sleep(300);
+		});
+	}
+	
+	@Test
+	void testMoveUp() {
+		int r = of.getRow();
+		of.moveUp();
+		assertTrue(r != of.getRow());
+		
+	}
+	
+	@Test
+	void testMoveDown() {
+		int r = of.getRow();
+		of.moveDown();
+		assertTrue(r != of.getRow());
+		
+	}
+	
+	@Test
+	void testMoveRight() {
+		int r = of.getfocusColumn();
+		of.moveRight();
+		assertTrue(r != of.getfocusColumn());
+		
+	}
+	
+	@Test
+	void testMoveLeft() {
+		int r = of.getfocusColumn();
+		of.moveLeft();
+		assertTrue(r != of.getfocusColumn());
+		
 	}
 
 	@Test
