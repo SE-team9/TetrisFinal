@@ -16,7 +16,7 @@ public class AttackLineArea extends JPanel{
 		gridCellSize = w / 50;
 	}
 	
-	private void initThisPanel(int gfW, int gfH, int xGap) {
+	public void initThisPanel(int gfW, int gfH, int xGap) {
 		updatePanelSize();
 		this.setBounds(gfW * 11 / 15 + xGap, gfH / 60, width, width);
 		this.setBackground(new Color(238, 238, 238));
@@ -38,7 +38,7 @@ public class AttackLineArea extends JPanel{
 		this.bg = bg;
 	}
 
-	private void drawBackground(Graphics g) {
+	public void drawBackground(Graphics g) {
 		for (int r = 19; r > 9; r--) {
 			for (int c = 0; c < 10; c++) {
 				if (bg[r][c] == Color.gray) {
@@ -71,4 +71,7 @@ public class AttackLineArea extends JPanel{
 		return bg;
 	}
 	
+	public int getGridCellSize() {
+		return gridCellSize;
+	}
 }
