@@ -1,6 +1,8 @@
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.awt.Color;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -23,15 +25,6 @@ class TetrisBlockTest {
 		nba.initNextBlockArea();
 	}
 
-	@Test
-	void testTetrisBlock() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testSpawn() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testSetShape() {
@@ -45,28 +38,11 @@ class TetrisBlockTest {
 
 	@Test
 	void testGetColor() {
-		fail("Not yet implemented");
+		Color c = tb.getColor();
+		assertNotNull(c);
 	}
 
-	@Test
-	void testSetColorInt() {
-		fail("Not yet implemented");
-	}
 
-	@Test
-	void testSetColorColor() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testGetHeight() {
-		assertNotNull(tb.getHeight());
-	}
-
-	@Test
-	void testGetWidth() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testGetX() {
@@ -83,12 +59,9 @@ class TetrisBlockTest {
 		final NextBlockArea nba = new NextBlockArea(600, 450);
 		nba.initNextBlockArea();
 		tb.setX(0);
+		assertTrue(tb.getX()==0);
 	}
 
-	@Test
-	void testGetY() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testSetY() {

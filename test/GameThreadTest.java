@@ -1,5 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
 import form.GameForm;
@@ -24,9 +26,10 @@ class GameThreadTest {
 	
 	@Test
 	void testRun() {
-		gt.run();
-		int gm = gt.getGameMode();
-		assertNotNull(gm);
+		assertTimeout(Duration.ofMillis(5000),() ->{
+			gt.run();
+			Thread.sleep(300);
+		});
 	}
 	
 	@Test
