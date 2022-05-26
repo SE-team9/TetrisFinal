@@ -720,7 +720,7 @@ public class GameArea extends JPanel {
 				}
 			}
 		}
-		
+
 		// 처음 블럭이 생성될 때 결정된 랜덤 위치에 L문자를 그린다.
 		Lpos = coloredCells.get(randIdx);
 		

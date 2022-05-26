@@ -249,7 +249,7 @@ public class LeaderboardForm extends JFrame {
 		});
 	}
 
-	private void moveRight() {
+	public void moveRight() {
 		this.remove(scrollLeaderboard); // 화면에서 컴포넌트 제거 
 		
 		curMode++;
@@ -261,7 +261,7 @@ public class LeaderboardForm extends JFrame {
 		lblGameMode.setText(gameMode[curMode]);
 	}
 
-	private void moveLeft() {
+	public void moveLeft() {
 		this.remove(scrollLeaderboard);
 
 		curMode--;
