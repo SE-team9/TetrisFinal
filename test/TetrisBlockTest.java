@@ -25,17 +25,6 @@ class TetrisBlockTest {
 		nba.initNextBlockArea();
 	}
 
-
-	@Test
-	void testSetShape() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testGetShape() {
-		fail("Not yet implemented");
-	}
-
 	@Test
 	void testGetColor() {
 		Color c = tb.getColor();

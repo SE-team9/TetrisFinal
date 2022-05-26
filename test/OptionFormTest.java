@@ -47,6 +47,14 @@ class OptionFormTest {
 	}
 	
 	@Test
+	void testInitDefaultSettings() {
+		assertTimeout(Duration.ofMillis(10000),() ->{
+			of.initDefaultSettings();
+			Thread.sleep(300);
+		});
+	}
+	
+	@Test
 	void testMoveUp() {
 		int r = of.getRow();
 		of.moveUp();
