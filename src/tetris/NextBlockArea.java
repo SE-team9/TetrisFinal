@@ -317,4 +317,12 @@ public class NextBlockArea extends JPanel {
 			break;
 		}
 	}
+	
+	public int getWidth() {
+		return width; 
+	}
+	
+	public int getGridCellSize() {
+		return gridCellSize;
+	}
 }
