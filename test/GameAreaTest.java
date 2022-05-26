@@ -1,3 +1,4 @@
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
@@ -57,11 +58,6 @@ class GameAreaTest {
 		fail("Not yet implemented");
 	}
 
-	@Test
-	@Disabled
-	void testSetIsItem() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	@Disabled
@@ -139,9 +135,8 @@ class GameAreaTest {
 	}
 
 	@Test
-	@Disabled
 	void testIsBlockOutOfBounds() {
-		fail("Not yet implemented");
+		assertNotNull(ga.isBlockOutOfBounds());
 	}
 
 	@Test

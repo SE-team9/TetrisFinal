@@ -103,6 +103,7 @@ public class GameArea extends JPanel {
 	public void setIsItem(boolean b) {
 		isItem = b;
 	}
+	public boolean getIsItem() {return isItem;}
 
 	// --------------------------------------------------------------- 블럭 생성
 
