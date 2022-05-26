@@ -1,3 +1,5 @@
+package test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -42,6 +44,11 @@ class NextBlockAreaTest {
 		nba.updateNextBlock();
 		assertNotNull(nba.getRandIndex());
 		assertNotNull(nba.getBlockIndex());
+	}
+	
+	@Test
+	void testGetGridCellSize() {
+		assertNotNull(nba.getGridCellSize());
 	}
 	
 	@Test
