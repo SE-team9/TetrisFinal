@@ -23,7 +23,7 @@ public class AttackLineArea extends JPanel{
 		this.setBorder(LineBorder.createBlackLineBorder());
 	}
 	
-	private void updatePanelSize() {
+	public void updatePanelSize() {
 		int data = Tetris.getFrameSize();
 		if(data == 0) {
 			this.width = 120;
@@ -62,4 +62,13 @@ public class AttackLineArea extends JPanel{
 		super.paintComponent(g);
 		drawBackground(g);
 	}
+	
+	public int getWidth() {
+		return width;
+	}
+	
+	public Color[][] get_bg(){
+		return bg;
+	}
+	
 }

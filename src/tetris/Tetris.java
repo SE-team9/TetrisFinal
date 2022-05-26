@@ -53,6 +53,10 @@ public class Tetris {
 		return size;
 	}
 	
+	public static void setFrameSize(int n) {
+		size = n;
+	}
+	
 	// 시작 화면 띄우기 
 	public static void showStartup() {
 		updateFrameSize(); // 멤버 변수 업데이트 
