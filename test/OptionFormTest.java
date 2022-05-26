@@ -1,7 +1,10 @@
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
+
 import org.junit.jupiter.api.Test;
 
+import form.GameForm;
 import form.OptionForm;
 
 class OptionFormTest {
@@ -43,7 +46,10 @@ class OptionFormTest {
 
 	@Test
 	void testMain() {
-		fail("Not yet implemented");
+		assertTimeout(Duration.ofMillis(5000),() ->{
+			of.main(null);
+			Thread.sleep(300);
+		});
 	}
 
 }
