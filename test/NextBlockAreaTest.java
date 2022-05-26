@@ -47,6 +47,11 @@ class NextBlockAreaTest {
 	}
 	
 	@Test
+	void testGetGridCellSize() {
+		assertNotNull(nba.getGridCellSize());
+	}
+	
+	@Test
 	void testUpdatePanelSize() {
 		Tetris.setFrameSize(1);
 		NextBlockArea nba2 = new NextBlockArea(600, 450);

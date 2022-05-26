@@ -163,7 +163,7 @@ public class StartupForm extends JFrame {
 		}
 	}
 
-	private void moveUp() {
+	public void moveUp() {
 		btnMenu[curPos].setBackground(Color.white);
 		curPos--;
 		if (curPos < 0) {
@@ -172,7 +172,7 @@ public class StartupForm extends JFrame {
 		btnMenu[curPos].setBackground(Color.lightGray);
 	}
 
-	private void moveDown() {
+	public void moveDown() {
 		btnMenu[curPos].setBackground(Color.white);
 		curPos++;
 		if (curPos > btnMenu.length - 1) {
@@ -181,7 +181,7 @@ public class StartupForm extends JFrame {
 		btnMenu[curPos].setBackground(Color.lightGray);
 	}
 
-	private void moveRight() {
+	public void moveRight() {
 		lblGameMode[curGameMode].setVisible(false);
 		curGameMode++;
 		if (curGameMode > lblGameMode.length - 1) {
@@ -190,7 +190,7 @@ public class StartupForm extends JFrame {
 		lblGameMode[curGameMode].setVisible(true);
 	}
 
-	private void moveLeft() {
+	public void moveLeft() {
 		lblGameMode[curGameMode].setVisible(false);
 		curGameMode--;
 		if (curGameMode < 0) {
@@ -207,6 +207,10 @@ public class StartupForm extends JFrame {
 	public void setCurrentGameMode(int n) {
 		curGameMode = n;
 	}
+	
+	//test를 위한 함수
+	public int getCurPos() {return curPos;}
+	public int getCurGameMode() {return curGameMode;}
 
 	// StartupForm 프레임 실행
 	public static void main(String[] args) {
