@@ -25,7 +25,7 @@ public class GameThread extends Thread {
 	private boolean curIsItem = false; 	// 현재 블럭이 아이템인지 확인 
 	
 	private int itemCount = 0; // 아이템이 등장한 횟수 카운팅 
-	private static final int linePerItem = 5; // 줄 삭제에 따른 아이템 등장
+	private static final int linePerItem = 2; // 줄 삭제에 따른 아이템 등장
 	
 	// 대전 모드 
 	private int userID;
@@ -105,6 +105,7 @@ public class GameThread extends Thread {
 			
 			// 다음 블럭 업데이트 
 			nba.updateNextBlock();
+			nba.repaint();
 			
 			// 블럭이 위쪽 경계를 넘지 않으면 계속 낙하 
 			while (ga.moveBlockDown()) {
@@ -201,6 +202,7 @@ public class GameThread extends Thread {
 			
 			ga.spawnBlock(nba.getNextBlock());
 			nba.updateNextBlock(); 
+			nba.repaint();
 			
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown()) {
@@ -290,6 +292,8 @@ public class GameThread extends Thread {
 			}else {
 				nba.updateNextBlock(); // 일반 블럭으로
 			}
+			
+			nba.repaint();
 		
 			// ------------------------------------------------------- 한칸씩 내리기 
 			
@@ -403,6 +407,8 @@ public class GameThread extends Thread {
 			}else {
 				nba.updateNextBlock(); // 일반 블럭으로
 			}
+			
+			nba.repaint();
 
 			// --------------------------------------------------------- 한칸씩 내리기
 			while (ga.moveBlockDown()) {
@@ -456,6 +462,7 @@ public class GameThread extends Thread {
 			} 
 			// ------------------------------------------ 현재 블럭이 기본 블럭인 경우 
 			else { 
+				ga.saveBackground();
 				ga.moveBlockToBackground();
 				
 				// 현재 블럭이 배경으로 전환된 후에 다음 블럭이 아이템이면 
@@ -518,6 +525,7 @@ public class GameThread extends Thread {
 			// --------------------------------------------------------- 새로운 블럭 생성
 			ga.spawnBlock(nba.getNextBlock());
 			nba.updateNextBlock();
+			nba.repaint();
 
 			// --------------------------------------------------------- 한칸씩 블럭 내리기
 			while (ga.moveBlockDown() && time > 0) {
@@ -544,12 +552,20 @@ public class GameThread extends Thread {
 
 			// --------------------------------------------------------- 게임 종료 확인
 			
-			if (ga.isBlockOutOfBounds() || time <= 0) {
-				// TODO: 점수 비교해서 더 큰 사람이 뜨도록 
-				
+			// 시간제한이 끝나기 전에 한 명이 진 경우
+			if (ga.isBlockOutOfBounds()) {
 				gf.interrupt_Opp(userID);
-				
 				JOptionPane.showMessageDialog(null, (3 - userID) + " Player Win!");
+				gf.setVisible(false);
+				Tetris.showStartup();
+				break;
+			}
+			
+			// 시간제한이 끝났을 경우에는 점수 비교 후 승자 표시
+			if (time <= 0 && userID == 1) {
+				// TODO: 점수 비교해서 더 큰 사람이 뜨도록 
+				gf.interrupt_Opp(userID);
+				JOptionPane.showMessageDialog(null, gf.printWinnerMSG());
 				
 				gf.setVisible(false);
 				Tetris.showStartup();
@@ -623,6 +639,11 @@ public class GameThread extends Thread {
 	public void scorePlus15_pvp() {
 		score += 15;
 		gf.updateScore(score, userID);
+	}
+	
+	// 점수 비교를 위해 
+	public int getScore() {
+		return score;
 	}
 	
 	// test 위해 추가해두었습니다.

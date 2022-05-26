@@ -506,7 +506,19 @@ public class GameForm extends JFrame {
 			lblLevel2.setText("Level: " + level);
 		}
 	}
-
+	
+	// 점수에 따라 메세지 표시
+	public String printWinnerMSG() {
+		if(gt.getScore() > gt2.getScore()) {
+			return "1 Player Win!";
+		}
+		else if(gt.getScore() < gt2.getScore()) {
+			return "2 Player Win!"; 
+		}
+		else
+			return "Draw!";
+	}
+	
 	// 게임이 끝난 경우 상대 플레이어의 스레드를 퍼즈 후 종료시킨다.
 	public void interrupt_Opp(int userID) {
 		if (userID == 1) {

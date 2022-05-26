@@ -1,4 +1,4 @@
-package test;
+//package test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +20,7 @@ class GameAreaTest {
 	TetrisBlock tb = nba.getNextBlock();
 
 	@Test
-	@DisplayName("배경 초기화")
+	@DisplayName("배경 초기화 테스트")
 	public void testInitBackgroundArray() {
 		ga.initBackgroundArray();
 		Color[][] background = ga.getBackgroundArray();
@@ -28,7 +28,7 @@ class GameAreaTest {
 	}
 	
 	@Test
-	@DisplayName("경계 체크")
+	@DisplayName("outOfBounds 테스트")
 	void testIsBlockOutOfBounds() {
 		assertNotNull(ga.isBlockOutOfBounds());
 	}
