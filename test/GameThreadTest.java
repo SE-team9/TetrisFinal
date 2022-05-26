@@ -1,6 +1,6 @@
-import static org.junit.jupiter.api.Assertions.*;
+package test;
 
-import java.time.Duration;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,10 +26,9 @@ class GameThreadTest {
 	
 	@Test
 	void testRun() {
-		assertTimeout(Duration.ofMillis(5000),() ->{
-			gt.run();
-			Thread.sleep(300);
-		});
+		gt.run();
+		int gm = gt.getGameMode();
+		assertNotNull(gm);
 	}
 	
 	@Test
