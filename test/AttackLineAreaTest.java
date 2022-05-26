@@ -1,6 +1,7 @@
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
+import java.awt.Graphics;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +17,16 @@ class AttackLineAreaTest {
 	int width;
 	
 	@Test
-	@Disabled
-	void testAttackLineArea() {
-		fail("Not yet implemented");
+	@DisplayName("gridCellSize와 InitThisPanel 확인")
+	void testArrackLineArea() {
+		final AttackLineArea ala2 = new AttackLineArea(200, 200, 200);
+		int size = ala2.getGridCellSize();
+		assertEquals(size, 4);
 	}
 	
 	@Test
 	@DisplayName("프레임 사이즈에 따른 패널 사이즈 업데이트")
-	void testInitThisPanel() {
+	void testUpdatePanelSize() {
 		Tetris.setFrameSize(0);
 		ala.updatePanelSize();
 		assertEquals(120, ala.getWidth());
@@ -39,22 +42,12 @@ class AttackLineAreaTest {
 	
 	@Test
 	@DisplayName("background 설정")
-	void testset_bg() {
+	void testSet_bg() {
 		AttackLineArea ala2 = new AttackLineArea(10, 10, 10);
 		ala2.set_bg(ala.get_bg());
 		Color[][] bg = ala.get_bg();
 		Color[][] bg2 = ala2.get_bg();
 		assertEquals(bg, bg2);
+		Graphics g = null;
 	}
-	
-	@Test
-	void testDrawBackGround() {
-		fail("Not yet implemented");
-	}
-	
-	@Test
-	void testDrawGridSquare() {
-		fail("Not yet implemented");
-	}
-
 }
