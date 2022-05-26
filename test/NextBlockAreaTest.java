@@ -12,10 +12,6 @@ class NextBlockAreaTest {
 	private NextBlockArea nba = new NextBlockArea(600, 450);
 	private TetrisBlock nextBlock = ga.getBlock();
 
-	@Test
-	void testNextBlockArea() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	void testInitNextBlockArea() {
@@ -39,10 +35,12 @@ class NextBlockAreaTest {
 	void testPaintComponentGraphics() {
 		assertNotNull(nba.getIsItem());
 	}
-
+	
 	@Test
-	void testGetIsItem() {
-		fail("Not yet implemented");
+	void testUpdateNextItem() {
+		nba.updateNextBlock();
+		assertNotNull(nba.getRandIndex());
+		assertNotNull(nba.getBlockIndex());
 	}
 
 }

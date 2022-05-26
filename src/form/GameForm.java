@@ -530,6 +530,12 @@ public class GameForm extends JFrame {
 			ala2.repaint();
 		}
 	}
+	// test용 함수
+	public JLabel getLblScore() {return lblScore;}
+	public JLabel getLblScore2() {return lblScore2;}
+	public JLabel getLblLevel() {return lblLevel;}
+	public JLabel getLblLevel2() {return lblLevel2;}
+	public JLabel getLblTime() {return lblTime;}
 
 	// GameForm 프레임 실행
 	public static void main(String[] args) {
