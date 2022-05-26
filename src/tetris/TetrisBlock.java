@@ -57,8 +57,8 @@ public class TetrisBlock {
 
 	// ºí·° ³«ÇÏ À§Ä¡ ·£´ýÀ¸·Î
 	public void spawn(int gridWidth) {
-		Random r = new Random();
-		x = r.nextInt(gridWidth - getWidth());
+		//Random r = new Random();
+		x = (gridWidth - getWidth()) / 2;
 		y = -getHeight();
 	}
 	

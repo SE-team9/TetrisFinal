@@ -23,6 +23,12 @@ class GameAreaTest {
 	void testGameArea() {
 		fail("Not yet implemented");
 	}
+	
+	@Test
+	@Disabled
+	void testInitThisPanel() {
+		fail("Not yet implemented");
+	}
 
 	@Test
 	@DisplayName("배경 초기화")
@@ -31,10 +37,9 @@ class GameAreaTest {
 		Color[][] background = ga.getBackgroundArray();
 		assertNotNull(background);
 	}
-
+	
 //	@Test
 //	@DisplayName("블럭과 아이템 초기화")
-//	void testInitBlocks() {
 //		ga.initBlocks();
 //		
 //		TetrisBlock[] blocks = ga.getBlocks();
