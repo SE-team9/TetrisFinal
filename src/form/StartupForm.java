@@ -203,6 +203,10 @@ public class StartupForm extends JFrame {
 	public int getCurrentGameMode() {
 		return curGameMode;
 	}
+	
+	public void setCurrentGameMode(int n) {
+		curGameMode = n;
+	}
 
 	// StartupForm 프레임 실행
 	public static void main(String[] args) {

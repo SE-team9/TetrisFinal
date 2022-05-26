@@ -21,7 +21,7 @@ class NextBlockAreaTest {
 
 	@Test
 	void testUpdateNBA() {
-		nba.updateNextBlock(nextBlock);
+		nba.updateNextBlock();
 		assertNotNull(nextBlock);
 	}
 
