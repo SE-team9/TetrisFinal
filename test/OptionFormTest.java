@@ -1,3 +1,5 @@
+package test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Duration;
@@ -42,6 +44,14 @@ class OptionFormTest {
 	void testInitScoreboard() {
 		assertTimeout(Duration.ofMillis(10000),() ->{
 			of.initScoreboard();
+			Thread.sleep(300);
+		});
+	}
+	
+	@Test
+	void testInitDefaultSettings() {
+		assertTimeout(Duration.ofMillis(10000),() ->{
+			of.initDefaultSettings();
 			Thread.sleep(300);
 		});
 	}

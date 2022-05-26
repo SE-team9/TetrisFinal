@@ -1,3 +1,5 @@
+package test;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,17 +25,6 @@ class TetrisBlockTest {
 		final GameArea ga = new GameArea(600, 450, 10);
 		//ga.initBlocks();
 		nba.initNextBlockArea();
-	}
-
-
-	@Test
-	void testSetShape() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	void testGetShape() {
-		fail("Not yet implemented");
 	}
 
 	@Test

@@ -213,7 +213,7 @@ public class OptionForm extends JFrame {
 	}
 	
 	// 모든 설정을 첫번째 칼럼으로 
-	private void initDefaultSettings() {
+	public void initDefaultSettings() {
 		for(int i = 0; i < ROW; i++) {
 			focusColumn[i] = 0;
 			confirmedColumn[i] = 0;
