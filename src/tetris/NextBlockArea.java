@@ -168,9 +168,6 @@ public class NextBlockArea extends JPanel {
 				}
 			}
 		}
-		
-		// 스레드에 의해 한칸씩 떨어질 때마다 블럭 다시 그리기 
-		repaint();
 	}
 	
 	private void drawRandomL(Graphics g) {

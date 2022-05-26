@@ -71,6 +71,7 @@ class GameAreaTest {
 		fail("Not yet implemented");
 	}
 
+	/*
 	@Test
 	@DisplayName("다음 블럭 설정")
 	void testUpdateNextBlock() {
@@ -86,6 +87,9 @@ class GameAreaTest {
 		}
 		assertEquals(same, 1);
 	}
+	*/
+	
+	/*
 
 	@Test
 	@DisplayName("다음 아이템 설정")
@@ -102,6 +106,8 @@ class GameAreaTest {
 		}
 		assertEquals(same, 1);
 	}
+	
+	*/
 
 	@Test
 	@Disabled
@@ -115,6 +121,7 @@ class GameAreaTest {
 		fail("Not yet implemented");
 	}
 
+	/*
 	@Test
 	@DisplayName("블럭 스폰")
 	void testSpawnBlock() {
@@ -133,12 +140,13 @@ class GameAreaTest {
 
 		assertTrue(curX > 0 && curX < gridColumns - curBlockWidth);
 	}
-
+*/
 	@Test
 	void testIsBlockOutOfBounds() {
 		assertNotNull(ga.isBlockOutOfBounds());
 	}
 
+	/*
 	@Test
 	@DisplayName("블럭 아래로 이동")
 	void testMoveBlockDown() {
@@ -190,13 +198,13 @@ class GameAreaTest {
 			assertEquals(ga.getBlock().getX(), x);
 		}
 	}
-
+*/
 	@Test
 	@Disabled
 	void testDropBlock() {
 		fail("Not yet implemented");
 	}
-
+/*
 	@Test
 	@DisplayName("블럭 회전")
 	void testRotateBlock() {
@@ -225,7 +233,7 @@ class GameAreaTest {
 			assertArrayEquals(ga.getBlock().getShape(), shape);
 		}
 	}
-
+*/
 	@Test
 	@Disabled
 	void testFillEmpty() {
