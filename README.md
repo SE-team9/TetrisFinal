@@ -43,8 +43,8 @@
 [아이템에 대한 요구사항 명세서](https://equable-gourd-e4e.notion.site/85498409bd744aa480b4bce6ef76b6c8)
 
 <div class="item">
-    <img width="500" src="https://user-images.githubusercontent.com/68090939/197132006-3bc5117c-ae9c-4a76-bc75-362b27e8ff02.png"/> 
-    <img width="500" src="https://user-images.githubusercontent.com/68090939/197132036-7509607e-47f9-43d3-8d06-e4efa6d626cd.png"/> 
+    <img width="350" src="https://user-images.githubusercontent.com/68090939/197132006-3bc5117c-ae9c-4a76-bc75-362b27e8ff02.png"/> 
+    <img width="350" src="https://user-images.githubusercontent.com/68090939/197132036-7509607e-47f9-43d3-8d06-e4efa6d626cd.png"/> 
 </div>
 
 ### 2P Normal Mode 
@@ -79,6 +79,6 @@
 - 일반 모드와 아이템 모드 구분해서 표시 
 
 <div class="score">
-  <img width="500" src="https://user-images.githubusercontent.com/68090939/197131446-3c6b2e37-30e4-410a-bbf3-fc6d7b62db50.png"/> 
-  <img width="500" src="https://user-images.githubusercontent.com/68090939/197136281-8facfcd1-2cea-48a0-a90a-d421fad39ae9.png"/> 
+  <img width="350" src="https://user-images.githubusercontent.com/68090939/197131446-3c6b2e37-30e4-410a-bbf3-fc6d7b62db50.png"/> 
+  <img width="350" src="https://user-images.githubusercontent.com/68090939/197136281-8facfcd1-2cea-48a0-a90a-d421fad39ae9.png"/> 
 </div> 
